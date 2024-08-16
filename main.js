@@ -63,7 +63,7 @@ async function handleClickChanges() {
   });
 }
 
-export function resetCameraPosition() {
+window.resetCameraPosition = function() {
   mapView.Camera.animateTo(defaultCameraPosition);
 }
 
