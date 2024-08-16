@@ -10,27 +10,31 @@ const mapOptions = {
 };
 const initialFloorId = '????';
 
-const mapData = await getMapData(mapOptions);
-const mapView = await show3dMap(
-  document.getElementById("mappedin-map"),
-  mapData,
-  { initialFloor: initialFloorId }
-);
-
-const defaultCameraPosition = {
-  bearing: mapView.Camera.bearing,
-  pitch: mapView.Camera.pitch,
-  zoomLevel: mapView.Camera.zoomLevel,
-  center: mapData.mapCenter,
-};
-
 async function init() {
+  const mapData = await getMapData(mapOptions);
+  const mapView = await show3dMap(
+    document.getElementById("mappedin-map"),
+    mapData,
+    { initialFloor: initialFloorId }
+  );
 
-  setupLabelsAndInteractivity();
-  handleClickChanges();
+  window.mapData = mapData;
+  window.mapView = mapView;
+
+  const defaultCameraPosition = {
+    bearing: mapView.Camera.bearing,
+    pitch: mapView.Camera.pitch,
+    zoomLevel: mapView.Camera.zoomLevel,
+    center: mapData.mapCenter,
+  };
+
+  window.defaultCameraPosition = defaultCamerPosition;
+
+  setupLabelsAndInteractivity(mapData, mapView);
+  handleClickChanges(mapData, mapView);
 }
 
-function setupLabelsAndInteractivity() {
+function setupLabelsAndInteractivity(mapData, mapView) {
   mapData.getByType('space').forEach(space => {
     if (space.name) {
       mapView.updateState(space, {
@@ -42,7 +46,7 @@ function setupLabelsAndInteractivity() {
   });
 }
 
-async function handleClickChanges() {
+async function handleClickChanges(mapData, mapView) {
   mapView.on('click', async (e) => {
     if (!e.spaces[0].name) {
       return;
@@ -63,11 +67,11 @@ async function handleClickChanges() {
   });
 }
 
-window.resetCameraPosition = function() {
-  mapView.Camera.animateTo(defaultCameraPosition);
+function resetCameraPosition(defaultTarget, mapView) {
+  mapView.Camera.animateTo(defaultTarget);
 }
 
-function deselectAll() {
+function deselectAll(mapData, mapView) {
   mapData.getByType('space').forEach((space) => {
     if (space.name) {
       mapView.updateState(space, {
@@ -77,7 +81,7 @@ function deselectAll() {
   });
 }
 
-async function selectById(id, zoom) {
+async function selectById(id, zoom, mapData, mapView) {
   const space = mapData.getById('space', id);
 
   if (!space) {
@@ -91,17 +95,17 @@ async function selectById(id, zoom) {
   }
 }
 
-function selectMany(idList) {
+function selectMany(idList, mapData, mapView) {
   for (const id of idList) {
     selectById(id, false, mapData, mapView);
   }
 }
 
-function changeFloor(floorId) {
+function changeFloor(floorId, mapView) {
   mapView.setFloor(floorId);
 }
 
-async function showDirections(firstId, secondId, accessible) {
+async function showDirections(firstId, secondId, accessible, mapData, mapView) {
   const firstSpace = mapData.getById('space', firstId);
   const secondSpace = mapData.getById('space', secondId);
 
@@ -115,7 +119,7 @@ async function showDirections(firstId, secondId, accessible) {
   }
 }
 
-function removeAllDirections() {
+function removeAllDirections(mapView) {
   mapView.Navigation.clear();
 }
 
