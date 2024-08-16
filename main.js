@@ -65,6 +65,7 @@ async function handleClickChanges() {
 
     const clickedSpace = e.spaces;
     mapView.updateState(clickedSpace[0], { color: interactivityColor });
+    FlutterChannel.postMessage(clickedSpace[0].id);
 
     await mapView.Camera.focusOn(clickedSpace[0]);
   });
