@@ -29,10 +29,6 @@ async function init() {
   handleClickChanges(mapData, mapView);
 }
 
-function printNumber() {
-  console.log(5)
-}
-
 function setupLabelsAndInteractivity(mapData, mapView) {
   mapData.getByType('space').forEach(space => {
     if (space.name) {
