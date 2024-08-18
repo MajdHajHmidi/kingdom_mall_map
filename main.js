@@ -131,5 +131,3 @@ window.showDirections = async function showDirections(firstId, secondId, accessi
 window.removeAllDirections = function removeAllDirections() {
   mapView.Navigation.clear();
 }
-
-init();
