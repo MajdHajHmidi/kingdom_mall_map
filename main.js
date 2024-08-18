@@ -1,20 +1,23 @@
 import { getMapData, show3dMap } from "./node_modules/@mappedin/mappedin-js";
 import './node_modules/@mappedin/mappedin-js/lib/index.css';
 
-// TODO: Adjust constants if necessary
-const interactivityColor = '#515151';
-const mapOptions = {
-  key: "65ca6d27d53f21f234ae6395",
-  secret: "0b25fc24d564c644443663d0b4d083605090d349975d0983fc96e06a5b1934dd",
-  mapId: "65c0ff7430b94e3fabd5bb8c",
-};
-const initialFloorId = '????';
+let interactivityColor;
+let mapOptions;
+let initialFloorId;
 
 let mapData;
 let mapView;
 let defaultCameraPosition;
 
-async function init() {
+window.init = async function init(interactivityColorValue, mapKey, mapSecret, mapId, initialFloorIdValue) {
+  interactivityColor = interactivityColorValue;
+  mapOptions = {
+  key: mapKey,
+  secret: mapSecret,
+  mapId: mapId,
+};
+  initialFloorId = initialFloorIdValue;
+
   mapData = await getMapData(mapOptions);
   mapView = await show3dMap(
     document.getElementById("mappedin-map"),
