@@ -12,32 +12,39 @@ let defaultCameraPosition;
 window.init = async function init(interactivityColorValue, mapKey, mapSecret, mapId, initialFloorIdValue) {
   interactivityColor = interactivityColorValue;
   mapOptions = {
-  key: mapKey,
-  secret: mapSecret,
-  mapId: mapId,
-};
+    key: mapKey,
+    secret: mapSecret,
+    mapId: mapId,
+  };
   initialFloorId = initialFloorIdValue;
 
-  mapData = await getMapData(mapOptions);
-  mapView = await show3dMap(
-    document.getElementById("mappedin-map"),
-    mapData,
-    { initialFloor: initialFloorId }
-  );
+  FlutterChannel.postMessage("loading");
 
-  defaultCameraPosition = {
-    bearing: mapView.Camera.bearing,
-    pitch: mapView.Camera.pitch,
-    zoomLevel: mapView.Camera.zoomLevel,
-    center: mapData.mapCenter,
-  };
+  try {
+    mapData = await getMapData(mapOptions);
+    mapView = await show3dMap(
+      document.getElementById("mappedin-map"),
+      mapData,
+      { initialFloor: initialFloorId }
+    );
 
-  window.mapData = mapData;
-  window.mapView = mapView;
-  // window.defaultCameraPosition = defaultCameraPosition;
+    defaultCameraPosition = {
+      bearing: mapView.Camera.bearing,
+      pitch: mapView.Camera.pitch,
+      zoomLevel: mapView.Camera.zoomLevel,
+      center: mapData.mapCenter,
+    };
 
-  setupLabelsAndInteractivity();
-  handleClickChanges();
+    window.mapData = mapData;
+    window.mapView = mapView;
+
+    setupLabelsAndInteractivity();
+    handleClickChanges();
+
+    FlutterChannel.postMessage("success");
+  } catch (error) {
+    FlutterChannel.postMessage("failure");
+  }
 }
 
 function setupLabelsAndInteractivity() {
