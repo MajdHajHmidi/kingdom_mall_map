@@ -170,7 +170,7 @@ function setupLabelsAndInteractivity() {
         //       foregroundColor: {
         //         active: markersForegroundColor,
         //       },
-        //       iconSize: 34
+        //       iconSize: 30
         //     }
         //   }
         // });
@@ -993,7 +993,7 @@ function showAllAmenities() {
         },
         marker: {
           icon: getAmenityIcon(poi.name),
-          iconSize: 34,
+          iconSize: 30,
         }
       }
     });
@@ -1013,7 +1013,7 @@ window.showAmenitiesOfType = function showAmenitiesOfType(type) {
           },
           marker: {
             icon: getAmenityIcon(poi.name),
-            iconSize: 34,
+            iconSize: 30,
           }
         }
       });
@@ -1105,30 +1105,31 @@ function getAmenityIcon(amenityType) {
 
 }
 
-init('65ca6d27d53f21f234ae6395', '0b25fc24d564c644443663d0b4d083605090d349975d0983fc96e06a5b1934dd', '65c0ff7430b94e3fabd5bb8c', 'm_bc60d9c6042fef0f', {
-  's_fa005f3d5fada368': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/a4d4304becabcd00970887da3bf25597ea336dca.png',
-  's_310f7df34a3c6853': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/292c30b0d8ba44f407ed9de0e1cfb197de016dd2.png',
-  's_5d2f5e3a61ba4fe4': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c741334482d256690da443d1e2d7c62fb6e84100.png',
-  's_75d2b2934fe2495f': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/dc2fa5e7ba2c2aac23d3f6adc2c92d535be144c8.png',
-  's_b6adb793f5040daf': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/b52166bfdc4d00c78d68dc49e299dede5b62a847.png',
-  's_c4bbb9b22a85cf30': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/63205038a4fbd968d51401e09a46682d29346c3d.png',
-  's_c33647c792604ae1': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/2cfc5a41e6425cab93fbdf283d020c2735042d8a.png',
-  's_58172f1247075c72': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/6cf3f49b0334f4dada1b801050b3f2024fb4bc51.png',
-  's_21b3ffc46583729a': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/5fd8c7fc858e511473d406ab1bec0ebb8956f386.png',
-  's_4f386ba681ebb61d': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/317817284bcf09b4fa29de2b7d102750256bf6a9.png',
-  's_8b3aac9b4b9dc9ef': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/df5e5d436a1bbd6c238656cdfa1deb3ff0db764d.png',
-  's_d33e419c4bb801c0': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/622303fe4496afa8fb8255eaef7ace716f321fed.png',
-  's_ca4c11f3a7bc82da': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c3f702f896784233f0cc71d6697dede1bf4ca58f.png',
-  's_6696afd32ac79ddb': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/983f7087bd7131954428429767dd3198233deb7c.png',
-  's_57e2ffa7f48e2cb6': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/dfe4f5f8ec42360f078e729548dc4a17962dfd79.png',
-  's_429e0a876a1e4490': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/992b3e6e43cd2737e4a52d5fa9f8256614d7e412.png',
-  's_45b97f4031d3ff2f': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/b3f0fdde9ee50f7540c3208f955223e53c2ceb61.png',
-  's_037e1a9fa2cb8331': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/654f4072326c03a4702fe528efaae0307fbb3c8d.png',
-  's_b08905633a9d2000': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/08e041a5925b0a5bbf25481322e98092f6038087.png',
-  's_ba1781eaf91646e9': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/389086747c500c816f978608840518541ecc5dec.png',
-  's_144702bf49e8c794': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/91106da1d5bc3164b53ca71317e2f02282c79b25.png',
-  's_0b35e438d8b666f6': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/35b579a6e8e49c98b098733ef1bd38f643488260.png',
-}, false)
+// TODO: Temp code, remove when done testing
+// init('65ca6d27d53f21f234ae6395', '0b25fc24d564c644443663d0b4d083605090d349975d0983fc96e06a5b1934dd', '65c0ff7430b94e3fabd5bb8c', 'm_bc60d9c6042fef0f', {
+//   's_fa005f3d5fada368': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/a4d4304becabcd00970887da3bf25597ea336dca.png',
+//   's_310f7df34a3c6853': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/292c30b0d8ba44f407ed9de0e1cfb197de016dd2.png',
+//   's_5d2f5e3a61ba4fe4': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c741334482d256690da443d1e2d7c62fb6e84100.png',
+//   's_75d2b2934fe2495f': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/dc2fa5e7ba2c2aac23d3f6adc2c92d535be144c8.png',
+//   's_b6adb793f5040daf': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/b52166bfdc4d00c78d68dc49e299dede5b62a847.png',
+//   's_c4bbb9b22a85cf30': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/63205038a4fbd968d51401e09a46682d29346c3d.png',
+//   's_c33647c792604ae1': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/2cfc5a41e6425cab93fbdf283d020c2735042d8a.png',
+//   's_58172f1247075c72': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/6cf3f49b0334f4dada1b801050b3f2024fb4bc51.png',
+//   's_21b3ffc46583729a': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/5fd8c7fc858e511473d406ab1bec0ebb8956f386.png',
+//   's_4f386ba681ebb61d': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/317817284bcf09b4fa29de2b7d102750256bf6a9.png',
+//   's_8b3aac9b4b9dc9ef': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/df5e5d436a1bbd6c238656cdfa1deb3ff0db764d.png',
+//   's_d33e419c4bb801c0': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/622303fe4496afa8fb8255eaef7ace716f321fed.png',
+//   's_ca4c11f3a7bc82da': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c3f702f896784233f0cc71d6697dede1bf4ca58f.png',
+//   's_6696afd32ac79ddb': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/983f7087bd7131954428429767dd3198233deb7c.png',
+//   's_57e2ffa7f48e2cb6': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/dfe4f5f8ec42360f078e729548dc4a17962dfd79.png',
+//   's_429e0a876a1e4490': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/992b3e6e43cd2737e4a52d5fa9f8256614d7e412.png',
+//   's_45b97f4031d3ff2f': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/b3f0fdde9ee50f7540c3208f955223e53c2ceb61.png',
+//   's_037e1a9fa2cb8331': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/654f4072326c03a4702fe528efaae0307fbb3c8d.png',
+//   's_b08905633a9d2000': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/08e041a5925b0a5bbf25481322e98092f6038087.png',
+//   's_ba1781eaf91646e9': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/389086747c500c816f978608840518541ecc5dec.png',
+//   's_144702bf49e8c794': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/91106da1d5bc3164b53ca71317e2f02282c79b25.png',
+//   's_0b35e438d8b666f6': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/35b579a6e8e49c98b098733ef1bd38f643488260.png',
+// }, false)
 
 // ! Map id default - Test only: 660c0c6e7c0c4fe5b4cc484c
 // ! Map id with POIs - Test only: 65c0ff7430b94e3fabd5bb8c
