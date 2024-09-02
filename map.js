@@ -62,7 +62,8 @@ window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue,
     addGrass()
     addStreets()
     addLakes()
-    addTrees()
+    addBushes()
+    addParking()
 
     if (viewOnlyStoreId) {
       setupLabelsAndInteractivity()
@@ -221,10 +222,8 @@ async function handleClickChanges() {
     //   mapView.Models.add(
     //     {
     //       target: e.coordinate,
-    //       // scale: [3, 3, 3],
-    //       // rotation: [0, 0, Math.floor(Math.random() * (180 - 0 + 1))],
-    //       scale: [1, 1, 1],
-    //       rotation: [0, 0, 32.5],
+    //       scale: [0.7, 0.7, 0.7],
+    //       rotation: [90, 0, 0],
     //       interactive: true,
     //     },
     //     {
@@ -689,15 +688,15 @@ function addGrass() {
 
 // TODO: Temp code, remove when done testing
 function addStreets() {
-  const verticalScale = [5, 25, 0.05]
+  const verticalScale = [5, 20, 0.05]
   const horizontalScale = [25, 5, 0.05]
   const hugeScale = [30, 30, 0.05]
   let streetList = []
 
   // Vertical scale
-  streetList.push({ latitude: 43.46350956288626, longitude: -80.52386888575651, type: 'vertical' })
-  streetList.push({ latitude: 43.46307237130912, longitude: -80.52348145822964, type: 'vertical' })
-  streetList.push({ latitude: 43.462973163065904, longitude: -80.5233943043402, type: 'vertical' })
+  streetList.push({ latitude: 43.463539049596186, longitude: -80.52389492213455, type: 'vertical' })
+  streetList.push({ latitude: 43.46304320413439, longitude: -80.52345611205969, type: 'vertical' })
+  streetList.push({ latitude: 43.46295424957172, longitude: -80.52337781868427, type: 'vertical' })
 
   // Horizontal scale
   streetList.push({ latitude: 43.463574441831085, longitude: -80.52407236014119, type: 'horizontal' })
@@ -788,28 +787,49 @@ function addLakes() {
 }
 
 // TODO: Temp code, remove when done testing
-function addTrees() {
-  // let treeList = []
+function addBushes() {
+  let bushList = []
 
-  // treeList.push({latitude: 43.001132211900114, longitude: -81.20383987680079,})
-  // treeList.push({latitude: 43.00109037964566, longitude: -81.20369405710846,})
-  // treeList.push({latitude: 43.00119860019542, longitude: -81.20364131693732,})
-  // treeList.push({latitude: 43.001246894790064, longitude: -81.20379440005121,})
+  bushList.push({ latitude: 43.46356784712305, longitude: -80.52278655109109, })
+  bushList.push({ latitude: 43.46311750596907, longitude: -80.52303150568125, })
+  bushList.push({ latitude: 43.46335490994362, longitude: -80.52252047772821, })
+  bushList.push({ latitude: 43.462884618195424, longitude: -80.5234222366155, })
+  bushList.push({ latitude: 43.46296257470178, longitude: -80.5236418634506, })
+  bushList.push({ latitude: 43.46322409571854, longitude: -80.52411010253458, })
+  bushList.push({ latitude: 43.46340015722247, longitude: -80.52421671129554, })
+  bushList.push({ latitude: 43.46372609690067, longitude: -80.52384867973356, })
+  bushList.push({ latitude: 43.46355867541901, longitude: -80.52357370941203, })
+  bushList.push({ latitude: 43.46377318624069, longitude: -80.52281889114069, })
+  bushList.push({ latitude: 43.463582392643325, longitude: -80.52420949679151, })
+  bushList.push({ latitude: 43.463079233527274, longitude: -80.52324081592958, })
 
-  // treeList.forEach((coordinate) => {
-  //   mapView.Models.add(
-  //     {
-  //       target: new Coordinate(coordinate.latitude, coordinate.longitude),
-  //       scale: [3, 3, 3],
-  //       rotation: [90, 0, 0],
-  //     },
-  //     {
-  //       url: "./assets/models/bush2.glb",
-  //     }
-  //   );
-  // })
+  bushList.forEach((coordinate) => {
+    mapView.Models.add(
+      {
+        target: new Coordinate(coordinate.latitude, coordinate.longitude),
+        scale: [0.7, 0.7, 0.7],
+        rotation: [90, 0, 0],
+      },
+      {
+        url: "./assets/models/bush.glb",
+      }
+    );
+  })
 }
 
+// TODO: Temp code, remove when done testing
+function addParking() {
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.463768725776255, -80.52330110323231,),
+      scale: [0.05, 0.05, 0.05],
+      rotation: [0, 0, 32.5],
+    },
+    {
+      url: "./assets/models/parking.glb",
+    }
+  );
+}
 
 function fetchAllAmenities() {
   var amenitiesList = []
