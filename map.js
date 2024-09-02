@@ -213,24 +213,24 @@ function setupLabelsAndInteractivity() {
 async function handleClickChanges() {
   mapView.on('click', async (e) => {
     // TODO: Temp code, remove when done testing
-    if (e.models.length > 0) {
-      //If a 3D Model was clicked on, remove it.
-      mapView.Models.remove(e.models[0]);
-    } else {
-      console.clear()
-      console.log(e.coordinate)
-      mapView.Models.add(
-        {
-          target: e.coordinate,
-          scale: [0.009, 0.01, 0.05],
-          rotation: [0, 0, -58],
-          interactive: true,
-        },
-        {
-          url: "./assets/models/lake3.glb",
-        }
-      );
-    }
+    // if (e.models.length > 0) {
+    //   //If a 3D Model was clicked on, remove it.
+    //   mapView.Models.remove(e.models[0]);
+    // } else {
+    //   console.clear()
+    //   console.log(e.coordinate)
+    //   mapView.Models.add(
+    //     {
+    //       target: e.coordinate,
+    //       scale: [0.009, 0.01, 0.05],
+    //       rotation: [0, 0, -58],
+    //       interactive: true,
+    //     },
+    //     {
+    //       url: "./assets/models/lake3.glb",
+    //     }
+    //   );
+    // }
 
     // 1 Disable ability to click objects (not spaces)
     if (e.spaces.length == 0 || !e.spaces[0].name) {
