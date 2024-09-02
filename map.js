@@ -3,11 +3,11 @@ import './node_modules/@mappedin/mappedin-js/lib/index.css';
 
 const defaultSpaceColor = '#f2efdc';
 const defaultStoreColor = '#f0f0ee';
-const hallwayColor = '#fcfcfc';
+const hallwayColor = '#f2f2f2';
 const markersForegroundColor = '#fafafa';
 const interactivityColor = '#454544';
 const navigationColor = '#fbda03';
-const objectsColors = "#dededc";
+const objectsColors = "#e3e3de";
 const washroomsColor = "#dadee8";
 
 const washroomsIconSVG = `
@@ -213,24 +213,24 @@ function setupLabelsAndInteractivity() {
 async function handleClickChanges() {
   mapView.on('click', async (e) => {
     // TODO: Temp code, remove when done testing
-    // if (e.models.length > 0) {
-    //   //If a 3D Model was clicked on, remove it.
-    //   mapView.Models.remove(e.models[0]);
-    // } else {
-    //   console.clear()
-    //   console.log(e.coordinate)
-    //   mapView.Models.add(
-    //     {
-    //       target: e.coordinate,
-    //       scale: [0.7, 0.7, 0.7],
-    //       rotation: [90, 0, 0],
-    //       interactive: true,
-    //     },
-    //     {
-    //       url: "./assets/models/bush.glb",
-    //     }
-    //   );
-    // }
+    if (e.models.length > 0) {
+      //If a 3D Model was clicked on, remove it.
+      mapView.Models.remove(e.models[0]);
+    } else {
+      console.clear()
+      console.log(e.coordinate)
+      mapView.Models.add(
+        {
+          target: e.coordinate,
+          scale: [0.009, 0.01, 0.05],
+          rotation: [0, 0, -58],
+          interactive: true,
+        },
+        {
+          url: "./assets/models/lake3.glb",
+        }
+      );
+    }
 
     // 1 Disable ability to click objects (not spaces)
     if (e.spaces.length == 0 || !e.spaces[0].name) {
@@ -570,6 +570,7 @@ function addGrass() {
   grassList.push({ latitude: 43.46332949420233, longitude: -80.52291718305345, type: 'huge' })
   grassList.push({ latitude: 43.46328930414219, longitude: -80.52300263540775, type: 'huge' })
   grassList.push({ latitude: 43.46323599847816, longitude: -80.52308738047296, type: 'huge' })
+  grassList.push({ latitude: 43.46393426725448, longitude: -80.52351003934058, type: 'huge' })
 
   // Extra Vertical scale
   grassList.push({ latitude: 43.46304074595203, longitude: -80.52413146612061, type: 'exVertical' })
@@ -612,6 +613,27 @@ function addGrass() {
   grassList.push({ latitude: 43.4632943721975, longitude: -80.52414476093645, type: 'exHuge' })
   grassList.push({ latitude: 43.463161889699336, longitude: -80.52413556105826, type: 'exHuge' })
   grassList.push({ latitude: 43.46320611246892, longitude: -80.52404019776516, type: 'exHuge' })
+  grassList.push({ latitude: 43.463109830942365, longitude: -80.52395030668976, type: 'exHuge' })
+  grassList.push({ latitude: 43.463070004656615, longitude: -80.52403444778528, type: 'exHuge' })
+  grassList.push({ latitude: 43.46301802207215, longitude: -80.52386023941413, type: 'exHuge' })
+  grassList.push({ latitude: 43.462985560085805, longitude: -80.52393342591269, type: 'exHuge' })
+  grassList.push({ latitude: 43.462923783472654, longitude: -80.52378068598539, type: 'exHuge' })
+  grassList.push({ latitude: 43.46288340285912, longitude: -80.52385995202374, type: 'exHuge' })
+  grassList.push({ latitude: 43.46285122330094, longitude: -80.52371643225636, type: 'exHuge' })
+  grassList.push({ latitude: 43.46280916933822, longitude: -80.5237929377837, type: 'exHuge' })
+  grassList.push({ latitude: 43.46323173161292, longitude: -80.52290983721247, type: 'exHuge' })
+  grassList.push({ latitude: 43.46316924202207, longitude: -80.52286684337092, type: 'exHuge' })
+  grassList.push({ latitude: 43.463236731380505, longitude: -80.52273931286723, type: 'exHuge' })
+  grassList.push({ latitude: 43.46330715434286, longitude: -80.52279274864888, type: 'exHuge' })
+  grassList.push({ latitude: 43.463336163324165, longitude: -80.52271928118141, type: 'exHuge' })
+  grassList.push({ latitude: 43.4632620784687, longitude: -80.52264733190879, type: 'exHuge' })
+
+  // Extra Huge Diagonal
+  grassList.push({ latitude: 43.46396367027718, longitude: -80.52334613325488, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.46393881538468, longitude: -80.52319100607046, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.46391795838668, longitude: -80.52306350746873, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.46391107355239, longitude: -80.5230199849701, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.464026005561486, longitude: -80.52316547764643, type: 'exDgHuge' })
 
   grassList.forEach((coordinate) => {
     if (coordinate.type == 'vertical') {
@@ -677,6 +699,17 @@ function addGrass() {
           target: new Coordinate(coordinate.latitude, coordinate.longitude),
           scale: extraHuge,
           rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    } else if (coordinate.type == 'exDgHuge') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: extraHuge,
+          rotation: [0, 0, -12.5],
         },
         {
           url: "./assets/models/grass.glb",
@@ -750,40 +783,40 @@ function addStreets() {
 
 // TODO: Temp code, remove when done testing
 function addLakes() {
-  let lakeList = []
+   mapView.Models.add(
+     {
+       target: new Coordinate(43.46295821582915, -80.52389587201739),
+          scale: [0.03, 0.03, 0.1],
+          rotation: [0, 0, 32.5],
+     },
+     {
+       url: "./assets/models/lake1.glb",
+     }
+   );
 
-  // First lake (Right)
-  lakeList.push({ latitude: 43.46322578022626, longitude: -80.52293242295323, })
-  lakeList.push({ latitude: 43.46326846462594, longitude: -80.5228406521072, })
-  lakeList.push({ latitude: 43.46331055387252, longitude: -80.52274963528083, })
-  lakeList.push({ latitude: 43.46324730554856, longitude: -80.52269393922818, })
-  lakeList.push({ latitude: 43.463205275850456, longitude: -80.52278498638415, })
-  lakeList.push({ latitude: 43.46316284228912, longitude: -80.52287721813697, })
-
-  // Second lake (Left)
-  lakeList.push({ latitude: 43.46313229935999, longitude: -80.5239467504993, })
-  lakeList.push({ latitude: 43.46308997767961, longitude: -80.52403851923302, })
-  lakeList.push({ latitude: 43.46306455977854, longitude: -80.52388721583704, })
-  lakeList.push({ latitude: 43.46302217657275, longitude: -80.52397908030532, })
-  lakeList.push({ latitude: 43.462999152760716, longitude: -80.5238296729029, })
-  lakeList.push({ latitude: 43.46293101385154, longitude: -80.52376966852424, })
-  lakeList.push({ latitude: 43.46286357673004, longitude: -80.52371043418636, })
-  lakeList.push({ latitude: 43.46295524563139, longitude: -80.52391999235606, })
-  lakeList.push({ latitude: 43.4628870108116, longitude: -80.52386004013526, })
-  lakeList.push({ latitude: 43.46282081610972, longitude: -80.5238022030858, })
-
-  lakeList.forEach((coordinate) => {
-    mapView.Models.add(
-      {
-        target: new Coordinate(coordinate.latitude, coordinate.longitude),
-        scale: [9, 9, 0.05],
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.46328382816158, -80.52279368983257,),
+        scale: [0.015, 0.015, 0.1],
         rotation: [0, 0, 32.5],
-      },
-      {
-        url: "./assets/models/lake.glb",
-      }
-    );
-  })
+    },
+    {
+      url: "./assets/models/lake2.glb",
+    }
+  );
+
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.463886038638705, -80.52319971497941,),
+          scale: [0.009, 0.01, 0.007],
+          rotation: [0, 0, -58],
+    },
+    {
+      url: "./assets/models/lake3.glb",
+    }
+  );
+
+  
 }
 
 // TODO: Temp code, remove when done testing
@@ -802,6 +835,7 @@ function addBushes() {
   bushList.push({ latitude: 43.46377318624069, longitude: -80.52281889114069, })
   bushList.push({ latitude: 43.463582392643325, longitude: -80.52420949679151, })
   bushList.push({ latitude: 43.463079233527274, longitude: -80.52324081592958, })
+  bushList.push({ latitude: 43.46394400123322, longitude: -80.52349416813595, })
 
   bushList.forEach((coordinate) => {
     mapView.Models.add(
@@ -821,7 +855,8 @@ function addBushes() {
 function addParking() {
   mapView.Models.add(
     {
-      target: new Coordinate(43.463768725776255, -80.52330110323231,),
+
+      target: new Coordinate(43.46374694087725, -80.52331051909808,),
       scale: [0.05, 0.05, 0.05],
       rotation: [0, 0, 32.5],
     },
