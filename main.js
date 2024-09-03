@@ -1,13 +1,13 @@
-import { getMapData, show3dMap } from "./node_modules/@mappedin/mappedin-js";
+import { Coordinate, getMapData, show3dMap } from "@mappedin/mappedin-js";
 import './node_modules/@mappedin/mappedin-js/lib/index.css';
 
 const defaultSpaceColor = '#f2efdc';
-const defaultStoreColor = '#e5e5e3';
-const hallwayColor = '#fafafa';
+const defaultStoreColor = '#f0f0ee';
+const hallwayColor = '#f2f2f2';
 const markersForegroundColor = '#fafafa';
-const interactivityColor = '#575654';
+const interactivityColor = '#454544';
 const navigationColor = '#fbda03';
-const objectsColors = "#dededc";
+const objectsColors = "#e3e3de";
 const washroomsColor = "#dadee8";
 
 const washroomsIconSVG = `
@@ -19,8 +19,6 @@ const washroomsIconSVG = `
                   <circle cx="23" cy="7" r="2" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
                 </svg>
 `
-// ! Map id default - Test only: 660c0c6e7c0c4fe5b4cc484c
-// ! Map id with POIs - Test only: 65c0ff7430b94e3fabd5bb8c
 
 let mapOptions;
 let initialFloorId;
@@ -33,14 +31,14 @@ let mobileWebView;
 
 let storesLogos = new Map();
 
-// ! TODO: Temp code, remove when done testing
+// TODO: Temp code, remove when done testing
 const storesFakeNames = new Map();
 
 // 'storesLogosDictionary' is a map pairing every store id with the url of the store logo
 // 'viewOnlyStoreId' is optinal, when not null, mapView will focus on it right away and map won't be interactive
 window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue, storesLogosDictionary, mobileWebViewValue, viewOnlyStoreId) {
 
-  // ! TODO: Temp code, remove when done testing
+  // TODO: Temp code, remove when done testing
   setFakeStoreNames();
 
   // Dependency Configuration
@@ -57,8 +55,15 @@ window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue,
     mapView = await show3dMap(
       document.getElementById("mappedin-map"),
       mapData,
-      { initialFloor: initialFloorId, outdoorView: { enabled: false }, pitch: 0 }
+      { initialFloor: initialFloorId, outdoorView: { enabled: false }, pitch: 0, }
     );
+
+    // TODO: Temp code, remove when done testing
+    addGrass()
+    addStreets()
+    addLakes()
+    addBushes()
+    addParking()
 
     if (viewOnlyStoreId) {
       setupLabelsAndInteractivity()
@@ -78,7 +83,6 @@ window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue,
     handleClickChanges();
 
     // Fetch from map and send to Flutter app
-    fetchAllFloors()
     fetchAllAmenities()
 
     // Emit success state
@@ -91,35 +95,6 @@ window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue,
       FlutterChannel.postMessage("failure");
     }
   }
-}
-
-// ! TODO: Temp code, remove when done testing
-function setFakeStoreNames() {
-  storesFakeNames.set('s_bce4f6eba1eacbce', 'Apple');
-  storesFakeNames.set('s_99031e56124e15be', 'Starbucks Coffee');
-  storesFakeNames.set('s_16a3dd1e565014c9', 'Michael Kors');
-  storesFakeNames.set('s_2666c01300f4903b', 'T-Mobile');
-  storesFakeNames.set('s_100b315377825045', 'AT&T');
-  storesFakeNames.set('s_6822d0f8c7c97cde', 'Frost');
-  storesFakeNames.set('s_73c5dd8bb0f19832', 'Two Boys Donuts');
-  storesFakeNames.set('s_172af9e6c417773d', 'Laser Away');
-  storesFakeNames.set('s_29886fd1f182151e', 'Sunglass Hut');
-  storesFakeNames.set('s_251773d06b4a1db5', 'Fabletics');
-  storesFakeNames.set('s_e7d0bf05da390ef3', 'Tempur Pedic Albuquerque');
-  storesFakeNames.set('s_3063ef04147d4b7f', 'Purple');
-  storesFakeNames.set('s_d5d9efd1b79010ba', 'Toni & Guy');
-  storesFakeNames.set('s_40e9c3d8aad11204', 'The Melting Pot');
-  storesFakeNames.set('s_6b0a171066d36ce3', 'Avanti Milano');
-  storesFakeNames.set('s_2f61d7db828c720d', 'LUSH');
-  storesFakeNames.set('s_49c7d1bf15c3c3ed', 'Altar\'d State');
-  storesFakeNames.set('s_a6282dbddce83ca9', 'lululemon');
-  storesFakeNames.set('s_6b374885c6589958', 'Williams-Sonoma');
-  storesFakeNames.set('s_1cd760d028ef9694', 'Pottery Barn');
-  storesFakeNames.set('s_888fd83090613aeb', 'Talbots');
-  storesFakeNames.set('s_a05e2b9adb105f83', 'Sushi Freak');
-  storesFakeNames.set('s_6e32d608d4783694', 'UNTUCKit');
-  storesFakeNames.set('s_efce03cb7ee1d2e1', 'The North Face');
-  storesFakeNames.set('s_22014d7b479080c1', 'Mati');
 }
 
 function configureDependencies(mapKey, mapSecret, mapId, initialFloorIdValue, storesLogosDictionary, mobileWebViewValue) {
@@ -159,6 +134,9 @@ function setupLabelsAndInteractivity() {
           });
           mapView.Labels.add(space, space.name, {
             appearance: {
+              text: {
+                size: 14
+              },
               marker: {
                 icon: washroomsIconSVG,
                 iconSize: 25,
@@ -180,6 +158,9 @@ function setupLabelsAndInteractivity() {
         // ORIGINAL CODE BELOW
         // mapView.Labels.add(space, space.name, {}, {
         //   appearance: {
+        //     text: {
+        //       size: 14
+        //     },
         //     marker: {
         //       // BELOW: Category icons (Changed to store logos instead)
         //       // icon: getIconFromCategory(storesCategories.get(space.id)),
@@ -189,7 +170,7 @@ function setupLabelsAndInteractivity() {
         //       foregroundColor: {
         //         active: markersForegroundColor,
         //       },
-        //       iconSize: 34
+        //       iconSize: 30
         //     }
         //   }
         // });
@@ -197,6 +178,9 @@ function setupLabelsAndInteractivity() {
         // TEMP FAKE CODE BELOW
         mapView.Labels.add(space, storesFakeNames.get(space.id), {
           appearance: {
+            text: {
+              size: 14
+            },
             marker: {
               // BELOW: Category icons (Changed to store logos instead)
               // icon: getIconFromCategory(storesCategories.get(space.id)),
@@ -228,6 +212,26 @@ function setupLabelsAndInteractivity() {
 
 async function handleClickChanges() {
   mapView.on('click', async (e) => {
+    // TODO: Temp code, remove when done testing
+    // if (e.models.length > 0) {
+    //   //If a 3D Model was clicked on, remove it.
+    //   mapView.Models.remove(e.models[0]);
+    // } else {
+    //   console.clear()
+    //   console.log(e.coordinate)
+    //   mapView.Models.add(
+    //     {
+    //       target: e.coordinate,
+    //       scale: [0.009, 0.01, 0.05],
+    //       rotation: [0, 0, -58],
+    //       interactive: true,
+    //     },
+    //     {
+    //       url: "./assets/models/lake3.glb",
+    //     }
+    //   );
+    // }
+
     // 1 Disable ability to click objects (not spaces)
     if (e.spaces.length == 0 || !e.spaces[0].name) {
       return;
@@ -248,7 +252,7 @@ async function handleClickChanges() {
     const clickedSpace = e.spaces;
     mapView.updateState(clickedSpace[0], { color: interactivityColor });
     if (mobileWebView) {
-      FlutterChannel.postMessage(clickedSpace[0].id);
+      FlutterChannel.postMessage("store" + clickedSpace[0].id);
     }
 
     // 4 Zoom to the clicked space
@@ -260,22 +264,606 @@ async function handleClickChanges() {
   });
 }
 
-function fetchAllFloors() {
-  var floorsList = []
+// TODO: Temp code, remove when done testing
+function setFakeStoreNames() {
+  storesFakeNames.set('s_fa005f3d5fada368', 'أديداس');
+  storesFakeNames.set('s_310f7df34a3c6853', 'نايكي');
+  storesFakeNames.set('s_5d2f5e3a61ba4fe4', 'أناقة تحاكي الزمن');
+  storesFakeNames.set('s_75d2b2934fe2495f', 'Chanel');
+  storesFakeNames.set('s_b6adb793f5040daf', 'Mango');
+  storesFakeNames.set('s_c4bbb9b22a85cf30', 'Calvin Klein');
+  storesFakeNames.set('s_c33647c792604ae1', 'Vans');
+  storesFakeNames.set('s_58172f1247075c72', 'McDonald\'s');
+  storesFakeNames.set('s_21b3ffc46583729a', 'Sunglass Hut');
+  storesFakeNames.set('s_4f386ba681ebb61d', 'Regus');
+  storesFakeNames.set('s_8b3aac9b4b9dc9ef', 'Captain Restaurant');
+  storesFakeNames.set('s_d33e419c4bb801c0', 'Albik Family Station');
+  storesFakeNames.set('s_ca4c11f3a7bc82da', 'Bahri One');
+  storesFakeNames.set('s_6696afd32ac79ddb', 'The Melting Pot');
+  storesFakeNames.set('s_57e2ffa7f48e2cb6', 'Avanti Milano');
+  storesFakeNames.set('s_429e0a876a1e4490', 'LUSH');
+  storesFakeNames.set('s_45b97f4031d3ff2f', 'Altar\'d State');
+  storesFakeNames.set('s_037e1a9fa2cb8331', 'lululemon');
+  storesFakeNames.set('s_b08905633a9d2000', 'Williams-Sonoma');
+  storesFakeNames.set('s_ba1781eaf91646e9', 'Pottery Barn');
+  storesFakeNames.set('s_144702bf49e8c794', 'Talbots');
+  storesFakeNames.set('s_0b35e438d8b666f6', 'Sushi Freak');
+}
 
-  mapData.getByType('floor').forEach((floor) => {
-    // ! Floor name is not the display name (L1, G, U1, etc.), not (Lower Ground, Third floor, etc.)
-    floorsList.push({
-      'id': floor.id,
-      'name': floor.name,
-    })
+// TODO: Temp code, remove when done testing
+function addGrass() {
+  let grassList = []
+  // const smallScale = [2, 2, 0.2]
+  const verticalScale = [2, 6, 0.2]
+  const horizontalScale = [6, 2, 0.2]
+  const hugeScale = [9, 9, 0.2]
+  const extraVerticalScale = [2, 90, 0.2]
+  const extraHorizontalScale = [90, 2, 0.2]
+  const extraHuge = [13, 13, 0.2]
+
+  // Vertical scale
+  grassList.push({ latitude: 43.46337725507896, longitude: -80.52349801489295, type: 'vertical' })
+  grassList.push({ latitude: 43.463420388000024, longitude: -80.52353594045489, type: 'vertical' })
+  grassList.push({ latitude: 43.46345433450374, longitude: -80.52356566843449, type: 'vertical' })
+  grassList.push({ latitude: 43.46350311137146, longitude: -80.52358056164339, type: 'vertical' })
+  grassList.push({ latitude: 43.46353788871422, longitude: -80.52361120083361, type: 'vertical' })
+  grassList.push({ latitude: 43.46356430808192, longitude: -80.5236344213029, type: 'vertical' })
+  grassList.push({ latitude: 43.46350365169991, longitude: -80.52381226933755, type: 'vertical' })
+  grassList.push({ latitude: 43.46346881217583, longitude: -80.52388519375074, type: 'vertical' })
+  grassList.push({ latitude: 43.46349277796884, longitude: -80.52399318226205, type: 'vertical' })
+  grassList.push({ latitude: 43.463411852864056, longitude: -80.5241407187603, type: 'vertical' })
+  grassList.push({ latitude: 43.46336846649207, longitude: -80.52410262293701, type: 'vertical' })
+  grassList.push({ latitude: 43.46332459867355, longitude: -80.52406414081271, type: 'vertical' })
+  grassList.push({ latitude: 43.463280848117016, longitude: -80.52402576167385, type: 'vertical' })
+  grassList.push({ latitude: 43.46326882594579, longitude: -80.52392137311892, type: 'vertical' })
+  grassList.push({ latitude: 43.463223742683766, longitude: -80.52388181698885, type: 'vertical' })
+  grassList.push({ latitude: 43.4631791562947, longitude: -80.52384271775216, type: 'vertical' })
+  grassList.push({ latitude: 43.463134880695634, longitude: -80.52380387359307, type: 'vertical' })
+  grassList.push({ latitude: 43.46309143582625, longitude: -80.52376575473438, type: 'vertical' })
+  grassList.push({ latitude: 43.463047161299514, longitude: -80.52372691903909, type: 'vertical' })
+  grassList.push({ latitude: 43.46311488664375, longitude: -80.52345973950322, type: 'vertical' })
+  grassList.push({ latitude: 43.46323676299989, longitude: -80.52316737498485, type: 'vertical' })
+  grassList.push({ latitude: 43.4634094312466, longitude: -80.52291795567072, type: 'vertical' })
+  grassList.push({ latitude: 43.46345401346885, longitude: -80.52295718475206, type: 'vertical' })
+  grassList.push({ latitude: 43.46349901411974, longitude: -80.52299674114718, type: 'vertical' })
+  grassList.push({ latitude: 43.463544070300195, longitude: -80.52303611411337, type: 'vertical' })
+  grassList.push({ latitude: 43.46358893132539, longitude: -80.52307555269715, type: 'vertical' })
+  grassList.push({ latitude: 43.46343740440643, longitude: -80.52337783501451, type: 'vertical' })
+  grassList.push({ latitude: 43.46349142256315, longitude: -80.52390521550234, type: 'vertical' })
+  grassList.push({ latitude: 43.463111943578326, longitude: -80.52346555413865, type: 'vertical' })
+  grassList.push({ latitude: 43.46309953213987, longitude: -80.52344550836057, type: 'vertical' })
+  grassList.push({ latitude: 43.46306860643118, longitude: -80.52342673803246, type: 'vertical' })
+  grassList.push({ latitude: 43.46302405886649, longitude: -80.52338767123508, type: 'vertical' })
+  grassList.push({ latitude: 43.46297905599498, longitude: -80.52334804296562, type: 'vertical' })
+  grassList.push({ latitude: 43.46294455108113, longitude: -80.52331785643419, type: 'vertical' })
+  grassList.push({ latitude: 43.46291818600628, longitude: -80.52329463015714, type: 'vertical' })
+  grassList.push({ latitude: 43.46307227780645, longitude: -80.52353257865148, type: 'vertical' })
+  grassList.push({ latitude: 43.463033889286955, longitude: -80.52349896480341, type: 'vertical' })
+  grassList.push({ latitude: 43.46298983309232, longitude: -80.52346028840097, type: 'vertical' })
+  grassList.push({ latitude: 43.462945499243716, longitude: -80.52342138764435, type: 'vertical' })
+  grassList.push({ latitude: 43.46290064576737, longitude: -80.52338207982523, type: 'vertical' })
+  grassList.push({ latitude: 43.46288432053909, longitude: -80.52336754188701, type: 'vertical' })
+  grassList.push({ latitude: 43.46351289563845, longitude: -80.52392311904718, type: 'vertical' })
+  grassList.push({ latitude: 43.463553231059414, longitude: -80.52395846159875, type: 'vertical' })
+  grassList.push({ latitude: 43.46356450621415, longitude: -80.52396839880376, type: 'vertical' })
+  grassList.push({ latitude: 43.46363743491274, longitude: -80.52392969179921, type: 'vertical' })
+  grassList.push({ latitude: 43.46403830858303, longitude: -80.5229807467769, type: 'vertical' })
+  grassList.push({ latitude: 43.464083276772854, longitude: -80.52302017525011, type: 'vertical' })
+  grassList.push({ latitude: 43.464126552158106, longitude: -80.52305820759503, type: 'vertical' })
+  grassList.push({ latitude: 43.46415728454612, longitude: -80.5230851394097, type: 'vertical' })
+  grassList.push({ latitude: 43.46348537285801, longitude: -80.52452399504034, type: 'vertical' })
+  grassList.push({ latitude: 43.46344301957325, longitude: -80.52448659272673, type: 'vertical' })
+  grassList.push({ latitude: 43.46268156488573, longitude: -80.52381623385808, type: 'vertical' })
+  grassList.push({ latitude: 43.463547698701056, longitude: -80.52385074569499, type: 'vertical' })
+  grassList.push({ latitude: 43.46363122379445, longitude: -80.52392407490808, type: 'vertical' })
+  grassList.push({ latitude: 43.463745099678434, longitude: -80.52367947271037, type: 'vertical' })
+  grassList.push({ latitude: 43.46377711998998, longitude: -80.52370770309291, type: 'vertical' })
+  grassList.push({ latitude: 43.46366095811636, longitude: -80.52360656817073, type: 'vertical' })
+  grassList.push({ latitude: 43.46361623882898, longitude: -80.5235670947582, type: 'vertical' })
+  grassList.push({ latitude: 43.463570926303646, longitude: -80.52352717085145, type: 'vertical' })
+  grassList.push({ latitude: 43.46352554633576, longitude: -80.52348740810653, type: 'vertical' })
+  grassList.push({ latitude: 43.46349966065435, longitude: -80.52346476680782, type: 'vertical' })
+  grassList.push({ latitude: 43.464039011832206, longitude: -80.52313725287038, type: 'vertical' })
+  grassList.push({ latitude: 43.46399437547047, longitude: -80.52309793784418, type: 'vertical' })
+  grassList.push({ latitude: 43.46394999708614, longitude: -80.5230591992707, type: 'vertical' })
+  grassList.push({ latitude: 43.463907224858254, longitude: -80.52302157407546, type: 'vertical' })
+  grassList.push({ latitude: 43.46386297619326, longitude: -80.52298293459361, type: 'vertical' })
+  grassList.push({ latitude: 43.46381850517251, longitude: -80.52294376881528, type: 'vertical' })
+  grassList.push({ latitude: 43.46377442307619, longitude: -80.52290495907225, type: 'vertical' })
+  grassList.push({ latitude: 43.463245987289824, longitude: -80.52392453167779, type: 'vertical' })
+  grassList.push({ latitude: 43.46320336974882, longitude: -80.52388808776426, type: 'vertical' })
+  grassList.push({ latitude: 43.46315923298473, longitude: -80.52384977391375, type: 'vertical' })
+  grassList.push({ latitude: 43.46311570341332, longitude: -80.52381216680753, type: 'vertical' })
+  grassList.push({ latitude: 43.463072195049605, longitude: -80.52377412136057, type: 'vertical' })
+  grassList.push({ latitude: 43.463030951765624, longitude: -80.52373902240689, type: 'vertical' })
+  grassList.push({ latitude: 43.463212290716605, longitude: -80.52394601396401, type: 'vertical' })
+  grassList.push({ latitude: 43.463241519974844, longitude: -80.52396885648294, type: 'vertical' })
+  grassList.push({ latitude: 43.46324718983777, longitude: -80.52394833732437, type: 'vertical' })
+  grassList.push({ latitude: 43.46320468685938, longitude: -80.52391225591855, type: 'vertical' })
+  grassList.push({ latitude: 43.46317342167979, longitude: -80.52390206361765, type: 'vertical' })
+  grassList.push({ latitude: 43.46312967448336, longitude: -80.5238635577434, type: 'vertical' })
+  grassList.push({ latitude: 43.46309102028542, longitude: -80.52382966689542, type: 'vertical' })
+  grassList.push({ latitude: 43.46304744785908, longitude: -80.52379138576877, type: 'vertical' })
+  grassList.push({ latitude: 43.46300905344864, longitude: -80.52375771306767, type: 'vertical' })
+  grassList.push({ latitude: 43.46301733093709, longitude: -80.52374470633059, type: 'vertical' })
+  grassList.push({ latitude: 43.46305871331574, longitude: -80.5237816652585, type: 'vertical' })
+  grassList.push({ latitude: 43.46310272329444, longitude: -80.52382080331543, type: 'vertical' })
+  grassList.push({ latitude: 43.46314515889568, longitude: -80.52385699857234, type: 'vertical' })
+  grassList.push({ latitude: 43.463176497134015, longitude: -80.52388368552374, type: 'vertical' })
+  grassList.push({ latitude: 43.46308083560971, longitude: -80.52411141304248, type: 'vertical' })
+  grassList.push({ latitude: 43.46303592234675, longitude: -80.52407193874976, type: 'vertical' })
+  grassList.push({ latitude: 43.462990935115016, longitude: -80.52403241036878, type: 'vertical' })
+  grassList.push({ latitude: 43.46295103180919, longitude: -80.52399747136342, type: 'vertical' })
+  grassList.push({ latitude: 43.46290643524037, longitude: -80.52395805730845, type: 'vertical' })
+  grassList.push({ latitude: 43.4628615490732, longitude: -80.52391860785302, type: 'vertical' })
+  grassList.push({ latitude: 43.462817556960715, longitude: -80.52388009221838, type: 'vertical' })
+  grassList.push({ latitude: 43.46277590072303, longitude: -80.52384351498871, type: 'vertical' })
+  grassList.push({ latitude: 43.46275025946622, longitude: -80.52382211816692, type: 'vertical' })
+  grassList.push({ latitude: 43.46276098733139, longitude: -80.52385759516767, type: 'vertical' })
+  grassList.push({ latitude: 43.462806269622966, longitude: -80.52389718875285, type: 'vertical' })
+  grassList.push({ latitude: 43.46285107224685, longitude: -80.5239386514778, type: 'vertical' })
+  grassList.push({ latitude: 43.46289448269482, longitude: -80.52397639973071, type: 'vertical' })
+  grassList.push({ latitude: 43.46293631090196, longitude: -80.52401095805467, type: 'vertical' })
+  grassList.push({ latitude: 43.46297880024867, longitude: -80.52404925469483, type: 'vertical' })
+  grassList.push({ latitude: 43.46302161249616, longitude: -80.52408841285478, type: 'vertical' })
+  grassList.push({ latitude: 43.46306617847934, longitude: -80.52412565804977, type: 'vertical' })
+
+  // Horizontal scale
+  grassList.push({ latitude: 43.46338354748157, longitude: -80.52344700472375, type: 'horizontal' })
+  grassList.push({ latitude: 43.46340588307954, longitude: -80.52339887531099, type: 'horizontal' })
+  grassList.push({ latitude: 43.46347611176505, longitude: -80.5233809226043, type: 'horizontal' })
+  grassList.push({ latitude: 43.463504339716536, longitude: -80.5233199243514, type: 'horizontal' })
+  grassList.push({ latitude: 43.46353257730305, longitude: -80.52325894498149, type: 'horizontal' })
+  grassList.push({ latitude: 43.46356117367888, longitude: -80.5231970993725, type: 'horizontal' })
+  grassList.push({ latitude: 43.46359005460807, longitude: -80.52313453005257, type: 'horizontal' })
+  grassList.push({ latitude: 43.46336850950604, longitude: -80.52292643452783, type: 'horizontal' })
+  grassList.push({ latitude: 43.463340288372414, longitude: -80.522987621535, type: 'horizontal' })
+  grassList.push({ latitude: 43.46331136231456, longitude: -80.52304993883959, type: 'horizontal' })
+  grassList.push({ latitude: 43.463283065729605, longitude: -80.52311118283791, type: 'horizontal' })
+  grassList.push({ latitude: 43.46326704687523, longitude: -80.52314585306796, type: 'horizontal' })
+  grassList.push({ latitude: 43.46320014960246, longitude: -80.523182189927, type: 'horizontal' })
+  grassList.push({ latitude: 43.46317177649553, longitude: -80.5232434028269, type: 'horizontal' })
+  grassList.push({ latitude: 43.46314384804083, longitude: -80.52330364431523, type: 'horizontal' })
+  grassList.push({ latitude: 43.463115394138114, longitude: -80.52336502888197, type: 'horizontal' })
+  grassList.push({ latitude: 43.463093563970205, longitude: -80.52341223962887, type: 'horizontal' })
+  grassList.push({ latitude: 43.46308441685531, longitude: -80.52357288623094, type: 'horizontal' })
+  grassList.push({ latitude: 43.46305717038227, longitude: -80.52363202675909, type: 'horizontal' })
+  grassList.push({ latitude: 43.463032739712666, longitude: -80.52368485121195, type: 'horizontal' })
+  grassList.push({ latitude: 43.46344437974188, longitude: -80.52412095732637, type: 'horizontal' })
+  grassList.push({ latitude: 43.46346787512299, longitude: -80.52407045394938, type: 'horizontal' })
+  grassList.push({ latitude: 43.4634850328531, longitude: -80.52403316012142, type: 'horizontal' })
+  grassList.push({ latitude: 43.46349284386873, longitude: -80.52394819863464, type: 'horizontal' })
+  grassList.push({ latitude: 43.46351613105538, longitude: -80.52378458230496, type: 'horizontal' })
+  grassList.push({ latitude: 43.463540633746675, longitude: -80.52373153672633, type: 'horizontal' })
+  grassList.push({ latitude: 43.46356564593269, longitude: -80.52367753843689, type: 'horizontal' })
+  grassList.push({ latitude: 43.46356199393117, longitude: -80.52401972172555, type: 'horizontal' })
+  grassList.push({ latitude: 43.46353306519473, longitude: -80.52408211314128, type: 'horizontal' })
+  grassList.push({ latitude: 43.463504224197685, longitude: -80.52414456405229, type: 'horizontal' })
+  grassList.push({ latitude: 43.463475732795715, longitude: -80.52420609700917, type: 'horizontal' })
+  grassList.push({ latitude: 43.46344765294831, longitude: -80.52426676121141, type: 'horizontal' })
+  grassList.push({ latitude: 43.46341962852855, longitude: -80.52432744127864, type: 'horizontal' })
+  grassList.push({ latitude: 43.46340263456305, longitude: -80.52436415959575, type: 'horizontal' })
+  grassList.push({ latitude: 43.46338417939546, longitude: -80.52440435044345, type: 'horizontal' })
+  grassList.push({ latitude: 43.46365822743737, longitude: -80.52397143333886, type: 'horizontal' })
+  grassList.push({ latitude: 43.46363056295525, longitude: -80.52403119093707, type: 'horizontal' })
+  grassList.push({ latitude: 43.463601851341465, longitude: -80.52409325434134, type: 'horizontal' })
+  grassList.push({ latitude: 43.46357333225703, longitude: -80.52415521506565, type: 'horizontal' })
+  grassList.push({ latitude: 43.46354543455287, longitude: -80.52421579400489, type: 'horizontal' })
+  grassList.push({ latitude: 43.46351647793552, longitude: -80.52427836276179, type: 'horizontal' })
+  grassList.push({ latitude: 43.46348767332036, longitude: -80.52434060787823, type: 'horizontal' })
+  grassList.push({ latitude: 43.46345887453051, longitude: -80.52440281598783, type: 'horizontal' })
+  grassList.push({ latitude: 43.463436786658285, longitude: -80.5244504916018, type: 'horizontal' })
+  grassList.push({ latitude: 43.463726888693905, longitude: -80.52406059943786, type: 'horizontal' })
+  grassList.push({ latitude: 43.463699341237756, longitude: -80.52412020616558, type: 'horizontal' })
+  grassList.push({ latitude: 43.463672643169474, longitude: -80.52417838053077, type: 'horizontal' })
+  grassList.push({ latitude: 43.46364451497565, longitude: -80.5242392129284, type: 'horizontal' })
+  grassList.push({ latitude: 43.463616752433694, longitude: -80.5242993489462, type: 'horizontal' })
+  grassList.push({ latitude: 43.4635889993285, longitude: -80.52435899578518, type: 'horizontal' })
+  grassList.push({ latitude: 43.463560746622775, longitude: -80.52442040075802, type: 'horizontal' })
+  grassList.push({ latitude: 43.46353630314111, longitude: -80.5244733260697, type: 'horizontal' })
+  grassList.push({ latitude: 43.463514683280046, longitude: -80.52452031419024, type: 'horizontal' })
+  grassList.push({ latitude: 43.46285091678956, longitude: -80.52339375035383, type: 'horizontal' })
+  grassList.push({ latitude: 43.46282243271351, longitude: -80.52345511358607, type: 'horizontal' })
+  grassList.push({ latitude: 43.462793867176664, longitude: -80.52351666164998, type: 'horizontal' })
+  grassList.push({ latitude: 43.4627653330147, longitude: -80.52357812822108, type: 'horizontal' })
+  grassList.push({ latitude: 43.46273754894027, longitude: -80.52363803816253, type: 'horizontal' })
+  grassList.push({ latitude: 43.4627098386612, longitude: -80.52369838527247, type: 'horizontal' })
+  grassList.push({ latitude: 43.462689942663765, longitude: -80.5237413667691, type: 'horizontal' })
+  grassList.push({ latitude: 43.46267232536163, longitude: -80.52377898552822, type: 'horizontal' })
+  grassList.push({ latitude: 43.46326305007754, longitude: -80.52397368118802, type: 'horizontal' })
+  grassList.push({ latitude: 43.46363453788578, longitude: -80.52387115758319, type: 'horizontal' })
+  grassList.push({ latitude: 43.46366344422965, longitude: -80.5238085313637, type: 'horizontal' })
+  grassList.push({ latitude: 43.46369168055496, longitude: -80.5237474783456, type: 'horizontal' })
+  grassList.push({ latitude: 43.463707440554934, longitude: -80.52371323613431, type: 'horizontal' })
+  grassList.push({ latitude: 43.46371988133353, longitude: -80.52368667957298, type: 'horizontal' })
+  grassList.push({ latitude: 43.463581459631456, longitude: -80.52382383344877, type: 'horizontal' })
+  grassList.push({ latitude: 43.46361029256736, longitude: -80.52376163776245, type: 'horizontal' })
+  grassList.push({ latitude: 43.463638987609166, longitude: -80.52369995765729, type: 'horizontal' })
+  grassList.push({ latitude: 43.46366542294506, longitude: -80.5236432429683, type: 'horizontal' })
+  grassList.push({ latitude: 43.46350735718972, longitude: -80.52341321558306, type: 'horizontal' })
+  grassList.push({ latitude: 43.46353621891552, longitude: -80.52335062873203, type: 'horizontal' })
+  grassList.push({ latitude: 43.46356502052669, longitude: -80.52328810337718, type: 'horizontal' })
+  grassList.push({ latitude: 43.46359403079489, longitude: -80.52322540615152, type: 'horizontal' })
+  grassList.push({ latitude: 43.46362228085613, longitude: -80.52316429459299, type: 'horizontal' })
+  grassList.push({ latitude: 43.4636505484701, longitude: -80.52310321036161, type: 'horizontal' })
+  grassList.push({ latitude: 43.46367957038668, longitude: -80.52304081447728, type: 'horizontal' })
+  grassList.push({ latitude: 43.46370819484557, longitude: -80.5229788490353, type: 'horizontal' })
+  grassList.push({ latitude: 43.46372393451954, longitude: -80.52294522695813, type: 'horizontal' })
+  grassList.push({ latitude: 43.46374191399502, longitude: -80.52290609991496, type: 'horizontal' })
+  grassList.push({ latitude: 43.4638064876651, longitude: -80.52370408188203, type: 'horizontal' })
+  grassList.push({ latitude: 43.463835189230174, longitude: -80.52364180132008, type: 'horizontal' })
+  grassList.push({ latitude: 43.463863264302816, longitude: -80.52358092519525, type: 'horizontal' })
+  grassList.push({ latitude: 43.463891909976525, longitude: -80.52351880025098, type: 'horizontal' })
+  grassList.push({ latitude: 43.4639208628962, longitude: -80.52345633014593, type: 'horizontal' })
+  grassList.push({ latitude: 43.463949222268646, longitude: -80.52339495530958, type: 'horizontal' })
+  grassList.push({ latitude: 43.463977295818545, longitude: -80.52333435166263, type: 'horizontal' })
+  grassList.push({ latitude: 43.464006020587625, longitude: -80.52327231239535, type: 'horizontal' })
+  grassList.push({ latitude: 43.46403483134501, longitude: -80.52321005365815, type: 'horizontal' })
+  grassList.push({ latitude: 43.4640511392084, longitude: -80.52317510234036, type: 'horizontal' })
+  grassList.push({ latitude: 43.4635064371081, longitude: -80.52396294208671, type: 'horizontal' })
+  grassList.push({ latitude: 43.46351982671544, longitude: -80.52397169346828, type: 'horizontal' })
+  grassList.push({ latitude: 43.46352940832935, longitude: -80.52399593294014, type: 'horizontal' })
+  grassList.push({ latitude: 43.46354063755302, longitude: -80.5240056238766, type: 'horizontal' })
+  grassList.push({ latitude: 43.46355088811902, longitude: -80.52401465406822, type: 'horizontal' })
+  grassList.push({ latitude: 43.46349761799646, longitude: -80.52404875890478, type: 'horizontal' })
+  grassList.push({ latitude: 43.46346943689157, longitude: -80.52411208596472, type: 'horizontal' })
+  grassList.push({ latitude: 43.463510925685505, longitude: -80.52406260375808, type: 'horizontal' })
+  grassList.push({ latitude: 43.463451198708, longitude: -80.52415159909941, type: 'horizontal' })
+  grassList.push({ latitude: 43.46348276965338, longitude: -80.52412386772465, type: 'horizontal' })
+  grassList.push({ latitude: 43.46346560039617, longitude: -80.5241638391726, type: 'horizontal' })
+  grassList.push({ latitude: 43.46352205810661, longitude: -80.5240737215474, type: 'horizontal' })
+  grassList.push({ latitude: 43.46349295430441, longitude: -80.52412903144095, type: 'horizontal' })
+  grassList.push({ latitude: 43.46347488520337, longitude: -80.52417128583402, type: 'horizontal' })
+  grassList.push({ latitude: 43.46349753832149, longitude: -80.52337219955008, type: 'horizontal' })
+  grassList.push({ latitude: 43.463526114583495, longitude: -80.52331179395392, type: 'horizontal' })
+  grassList.push({ latitude: 43.46355238574656, longitude: -80.523251828889, type: 'horizontal' })
+  grassList.push({ latitude: 43.46357954321246, longitude: -80.52319311670966, type: 'horizontal' })
+  grassList.push({ latitude: 43.463606239786145, longitude: -80.52312849192798, type: 'horizontal' })
+  grassList.push({ latitude: 43.46350569455316, longitude: -80.52338649796619, type: 'horizontal' })
+  grassList.push({ latitude: 43.463533978784085, longitude: -80.52332420806066, type: 'horizontal' })
+  grassList.push({ latitude: 43.463560979573316, longitude: -80.52326616342386, type: 'horizontal' })
+  grassList.push({ latitude: 43.46358913167285, longitude: -80.52320537889831, type: 'horizontal' })
+  grassList.push({ latitude: 43.46361576485897, longitude: -80.5231427633438, type: 'horizontal' })
+  grassList.push({ latitude: 43.463215850946334, longitude: -80.52263603396919, type: 'horizontal' })
+  grassList.push({ latitude: 43.46318733608947, longitude: -80.52269784320282, type: 'horizontal' })
+  grassList.push({ latitude: 43.463161439853835, longitude: -80.52275414080115, type: 'horizontal' })
+  grassList.push({ latitude: 43.46313330509054, longitude: -80.52281518730226, type: 'horizontal' })
+  grassList.push({ latitude: 43.46310867282901, longitude: -80.52286835698766, type: 'horizontal' })
+
+  // Huge scale
+  grassList.push({ latitude: 43.46349001248668, longitude: -80.52445001916928, type: 'huge' })
+  grassList.push({ latitude: 43.463530548832004, longitude: -80.52435902964132, type: 'huge' })
+  grassList.push({ latitude: 43.46357469171849, longitude: -80.52426689597213, type: 'huge' })
+  grassList.push({ latitude: 43.46362017297924, longitude: -80.524180175516, type: 'huge' })
+  grassList.push({ latitude: 43.46365687335464, longitude: -80.52409214778625, type: 'huge' })
+  grassList.push({ latitude: 43.46369935662743, longitude: -80.52399771036477, type: 'huge' })
+  grassList.push({ latitude: 43.46367722991675, longitude: -80.52389255404755, type: 'huge' })
+  grassList.push({ latitude: 43.46370823321535, longitude: -80.52383118079246, type: 'huge' })
+  grassList.push({ latitude: 43.4637457442725, longitude: -80.52375229823615, type: 'huge' })
+  grassList.push({ latitude: 43.46374989787978, longitude: -80.52391054661648, type: 'huge' })
+  grassList.push({ latitude: 43.463789940118, longitude: -80.52382465337529, type: 'huge' })
+  grassList.push({ latitude: 43.46383243618645, longitude: -80.5237359961906, type: 'huge' })
+  grassList.push({ latitude: 43.46387742000932, longitude: -80.52364725358022, type: 'huge' })
+  grassList.push({ latitude: 43.4639188798064, longitude: -80.5235593113445, type: 'huge' })
+  grassList.push({ latitude: 43.463964083240086, longitude: -80.52346634342186, type: 'huge' })
+  grassList.push({ latitude: 43.464006262993166, longitude: -80.52337411862902, type: 'huge' })
+  grassList.push({ latitude: 43.46404383964706, longitude: -80.52327806851895, type: 'huge' })
+  grassList.push({ latitude: 43.464090849778174, longitude: -80.52318801512396, type: 'huge' })
+  grassList.push({ latitude: 43.46411718124751, longitude: -80.52312686910246, type: 'huge' })
+  grassList.push({ latitude: 43.4640556708904, longitude: -80.52307431783608, type: 'huge' })
+  grassList.push({ latitude: 43.4639935926184, longitude: -80.52302125469545, type: 'huge' })
+  grassList.push({ latitude: 43.46393009514298, longitude: -80.5229652146192, type: 'huge' })
+  grassList.push({ latitude: 43.4638667566091, longitude: -80.522908466861, type: 'huge' })
+  grassList.push({ latitude: 43.46380351779649, longitude: -80.52285394620719, type: 'huge' })
+  grassList.push({ latitude: 43.4635548390973, longitude: -80.52378575674753, type: 'huge' })
+  grassList.push({ latitude: 43.46358979776122, longitude: -80.52370843187327, type: 'huge' })
+  grassList.push({ latitude: 43.46362334250132, longitude: -80.52362572738818, type: 'huge' })
+  grassList.push({ latitude: 43.463554146938456, longitude: -80.5235718772302, type: 'huge' })
+  grassList.push({ latitude: 43.46349137247562, longitude: -80.52351852947632, type: 'huge' })
+  grassList.push({ latitude: 43.463421245255766, longitude: -80.52348339378231, type: 'huge' })
+  grassList.push({ latitude: 43.46344188381414, longitude: -80.52342968096065, type: 'huge' })
+  grassList.push({ latitude: 43.46279518151757, longitude: -80.52365014052836, type: 'huge' })
+  grassList.push({ latitude: 43.46275211371453, longitude: -80.52374283987753, type: 'huge' })
+  grassList.push({ latitude: 43.46278391993209, longitude: -80.52363873194686, type: 'huge' })
+  grassList.push({ latitude: 43.462744723996686, longitude: -80.52372333946596, type: 'huge' })
+  grassList.push({ latitude: 43.46271846042815, longitude: -80.52378241286404, type: 'huge' })
+  grassList.push({ latitude: 43.46332949420233, longitude: -80.52291718305345, type: 'huge' })
+  grassList.push({ latitude: 43.46328930414219, longitude: -80.52300263540775, type: 'huge' })
+  grassList.push({ latitude: 43.46323599847816, longitude: -80.52308738047296, type: 'huge' })
+  grassList.push({ latitude: 43.46393426725448, longitude: -80.52351003934058, type: 'huge' })
+
+  // Extra Vertical scale
+  grassList.push({ latitude: 43.46304074595203, longitude: -80.52413146612061, type: 'exVertical' })
+  grassList.push({ latitude: 43.463677108144076, longitude: -80.5226637723372, type: 'exVertical' })
+
+  // Extra Horizontal scale
+  grassList.push({ latitude: 43.463117467525755, longitude: -80.5228183004146, type: 'exHorizontal' })
+  grassList.push({ latitude: 43.46395726456525, longitude: -80.52356256878596, type: 'exHorizontal' })
+
+  // Extra Huge
+  grassList.push({ latitude: 43.46372150476877, longitude: -80.52281075751301, type: 'exHuge' })
+  grassList.push({ latitude: 43.463627354919765, longitude: -80.5227297351458, type: 'exHuge' })
+  grassList.push({ latitude: 43.46353257272784, longitude: -80.52264158458274, type: 'exHuge' })
+  grassList.push({ latitude: 43.46343753625278, longitude: -80.522562004736, type: 'exHuge' })
+  grassList.push({ latitude: 43.46335092743754, longitude: -80.5224859373033, type: 'exHuge' })
+  grassList.push({ latitude: 43.46365047097811, longitude: -80.52293932321162, type: 'exHuge' })
+  grassList.push({ latitude: 43.46355585490684, longitude: -80.5228488046093, type: 'exHuge' })
+  grassList.push({ latitude: 43.46346916813342, longitude: -80.5227689025388, type: 'exHuge' })
+  grassList.push({ latitude: 43.46338804200374, longitude: -80.52265558512444, type: 'exHuge' })
+  grassList.push({ latitude: 43.46330013273426, longitude: -80.52257838507596, type: 'exHuge' })
+  grassList.push({ latitude: 43.46361852874255, longitude: -80.52301138262777, type: 'exHuge' })
+  grassList.push({ latitude: 43.4635280445078, longitude: -80.52292114054661, type: 'exHuge' })
+  grassList.push({ latitude: 43.46344699658048, longitude: -80.5228700905709, type: 'exHuge' })
+  grassList.push({ latitude: 43.46339556499773, longitude: -80.52282016839094, type: 'exHuge' })
+  grassList.push({ latitude: 43.463107332530036, longitude: -80.52299028289318, type: 'exHuge' })
+  grassList.push({ latitude: 43.46305105960248, longitude: -80.52313025067328, type: 'exHuge' })
+  grassList.push({ latitude: 43.46299460589953, longitude: -80.52325313652396, type: 'exHuge' })
+  grassList.push({ latitude: 43.46306909148534, longitude: -80.52332384826377, type: 'exHuge' })
+  grassList.push({ latitude: 43.46313492333335, longitude: -80.52319211727269, type: 'exHuge' })
+  grassList.push({ latitude: 43.46318977000141, longitude: -80.52306258311138, type: 'exHuge' })
+  grassList.push({ latitude: 43.462891244117515, longitude: -80.52347782368112, type: 'exHuge' })
+  grassList.push({ latitude: 43.46295332608566, longitude: -80.52353256562287, type: 'exHuge' })
+  grassList.push({ latitude: 43.46300527281984, longitude: -80.52357795792003, type: 'exHuge' })
+  grassList.push({ latitude: 43.4629734764652, longitude: -80.52364541524813, type: 'exHuge' })
+  grassList.push({ latitude: 43.462878174510756, longitude: -80.52356146869258, type: 'exHuge' })
+  grassList.push({ latitude: 43.4628596110302, longitude: -80.52354533619966, type: 'exHuge' })
+  grassList.push({ latitude: 43.46335481716206, longitude: -80.524299644936, type: 'exHuge' })
+  grassList.push({ latitude: 43.463395907297695, longitude: -80.5242112960211, type: 'exHuge' })
+  grassList.push({ latitude: 43.46325290917077, longitude: -80.52423356646885, type: 'exHuge' })
+  grassList.push({ latitude: 43.4632943721975, longitude: -80.52414476093645, type: 'exHuge' })
+  grassList.push({ latitude: 43.463161889699336, longitude: -80.52413556105826, type: 'exHuge' })
+  grassList.push({ latitude: 43.46320611246892, longitude: -80.52404019776516, type: 'exHuge' })
+  grassList.push({ latitude: 43.463109830942365, longitude: -80.52395030668976, type: 'exHuge' })
+  grassList.push({ latitude: 43.463070004656615, longitude: -80.52403444778528, type: 'exHuge' })
+  grassList.push({ latitude: 43.46301802207215, longitude: -80.52386023941413, type: 'exHuge' })
+  grassList.push({ latitude: 43.462985560085805, longitude: -80.52393342591269, type: 'exHuge' })
+  grassList.push({ latitude: 43.462923783472654, longitude: -80.52378068598539, type: 'exHuge' })
+  grassList.push({ latitude: 43.46288340285912, longitude: -80.52385995202374, type: 'exHuge' })
+  grassList.push({ latitude: 43.46285122330094, longitude: -80.52371643225636, type: 'exHuge' })
+  grassList.push({ latitude: 43.46280916933822, longitude: -80.5237929377837, type: 'exHuge' })
+  grassList.push({ latitude: 43.46323173161292, longitude: -80.52290983721247, type: 'exHuge' })
+  grassList.push({ latitude: 43.46316924202207, longitude: -80.52286684337092, type: 'exHuge' })
+  grassList.push({ latitude: 43.463236731380505, longitude: -80.52273931286723, type: 'exHuge' })
+  grassList.push({ latitude: 43.46330715434286, longitude: -80.52279274864888, type: 'exHuge' })
+  grassList.push({ latitude: 43.463336163324165, longitude: -80.52271928118141, type: 'exHuge' })
+  grassList.push({ latitude: 43.4632620784687, longitude: -80.52264733190879, type: 'exHuge' })
+
+  // Extra Huge Diagonal
+  grassList.push({ latitude: 43.46396367027718, longitude: -80.52334613325488, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.46393881538468, longitude: -80.52319100607046, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.46391795838668, longitude: -80.52306350746873, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.46391107355239, longitude: -80.5230199849701, type: 'exDgHuge' })
+  grassList.push({ latitude: 43.464026005561486, longitude: -80.52316547764643, type: 'exDgHuge' })
+
+  grassList.forEach((coordinate) => {
+    if (coordinate.type == 'vertical') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: verticalScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    } else if (coordinate.type == 'horizontal') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: horizontalScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    } else if (coordinate.type == 'exVertical') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: extraVerticalScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    } else if (coordinate.type == 'exHorizontal') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: extraHorizontalScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    }
+    else if (coordinate.type == 'huge') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: hugeScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    }
+    else if (coordinate.type == 'exHuge') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: extraHuge,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    } else if (coordinate.type == 'exDgHuge') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: extraHuge,
+          rotation: [0, 0, -12.5],
+        },
+        {
+          url: "./assets/models/grass.glb",
+        }
+      );
+    }
   })
+}
 
-  var jsonFloors = JSON.stringify(floorsList);
+// TODO: Temp code, remove when done testing
+function addStreets() {
+  const verticalScale = [5, 20, 0.05]
+  const horizontalScale = [25, 5, 0.05]
+  const hugeScale = [30, 30, 0.05]
+  let streetList = []
 
-  if (mobileWebView) {
-    FlutterChannel.postMessage(jsonFloors);
-  }
+  // Vertical scale
+  streetList.push({ latitude: 43.463539049596186, longitude: -80.52389492213455, type: 'vertical' })
+  streetList.push({ latitude: 43.46304320413439, longitude: -80.52345611205969, type: 'vertical' })
+  streetList.push({ latitude: 43.46295424957172, longitude: -80.52337781868427, type: 'vertical' })
+
+  // Horizontal scale
+  streetList.push({ latitude: 43.463574441831085, longitude: -80.52407236014119, type: 'horizontal' })
+  streetList.push({ latitude: 43.46345615964733, longitude: -80.5243280793897, type: 'horizontal' })
+  streetList.push({ latitude: 43.46365492438589, longitude: -80.52374639794179, type: 'horizontal' })
+  streetList.push({ latitude: 43.46362243080769, longitude: -80.52381609091306, type: 'horizontal' })
+
+  // Huge scale
+  streetList.push({ latitude: 43.46375308912703, longitude: -80.5234512477109, type: 'huge' })
+  streetList.push({ latitude: 43.46386200807034, longitude: -80.52321663020821, type: 'huge' })
+  streetList.push({ latitude: 43.46368666863356, longitude: -80.52339408505112, type: 'huge' })
+  streetList.push({ latitude: 43.46379565951727, longitude: -80.5231584813563, type: 'huge' })
+
+  streetList.forEach((coordinate) => {
+    if (coordinate.type == 'vertical') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: verticalScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/street.glb",
+        }
+      );
+    } else if (coordinate.type == 'horizontal') {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: horizontalScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/street.glb",
+        }
+      );
+    } else {
+      mapView.Models.add(
+        {
+          target: new Coordinate(coordinate.latitude, coordinate.longitude),
+          scale: hugeScale,
+          rotation: [0, 0, 32.5],
+        },
+        {
+          url: "./assets/models/street.glb",
+        }
+      );
+    }
+  })
+}
+
+// TODO: Temp code, remove when done testing
+function addLakes() {
+   mapView.Models.add(
+     {
+       target: new Coordinate(43.46295821582915, -80.52389587201739),
+          scale: [0.03, 0.03, 0.1],
+          rotation: [0, 0, 32.5],
+     },
+     {
+       url: "./assets/models/lake1.glb",
+     }
+   );
+
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.46328382816158, -80.52279368983257,),
+        scale: [0.015, 0.015, 0.1],
+        rotation: [0, 0, 32.5],
+    },
+    {
+      url: "./assets/models/lake2.glb",
+    }
+  );
+
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.463886038638705, -80.52319971497941,),
+          scale: [0.009, 0.01, 0.007],
+          rotation: [0, 0, -58],
+    },
+    {
+      url: "./assets/models/lake3.glb",
+    }
+  );
+
+  
+}
+
+// TODO: Temp code, remove when done testing
+function addBushes() {
+  let bushList = []
+
+  bushList.push({ latitude: 43.46356784712305, longitude: -80.52278655109109, })
+  bushList.push({ latitude: 43.46311750596907, longitude: -80.52303150568125, })
+  bushList.push({ latitude: 43.46335490994362, longitude: -80.52252047772821, })
+  bushList.push({ latitude: 43.462884618195424, longitude: -80.5234222366155, })
+  bushList.push({ latitude: 43.46296257470178, longitude: -80.5236418634506, })
+  bushList.push({ latitude: 43.46322409571854, longitude: -80.52411010253458, })
+  bushList.push({ latitude: 43.46340015722247, longitude: -80.52421671129554, })
+  bushList.push({ latitude: 43.46372609690067, longitude: -80.52384867973356, })
+  bushList.push({ latitude: 43.46355867541901, longitude: -80.52357370941203, })
+  bushList.push({ latitude: 43.46377318624069, longitude: -80.52281889114069, })
+  bushList.push({ latitude: 43.463582392643325, longitude: -80.52420949679151, })
+  bushList.push({ latitude: 43.463079233527274, longitude: -80.52324081592958, })
+  bushList.push({ latitude: 43.46394400123322, longitude: -80.52349416813595, })
+
+  bushList.forEach((coordinate) => {
+    mapView.Models.add(
+      {
+        target: new Coordinate(coordinate.latitude, coordinate.longitude),
+        scale: [0.7, 0.7, 0.7],
+        rotation: [90, 0, 0],
+      },
+      {
+        url: "./assets/models/bush.glb",
+      }
+    );
+  })
+}
+
+// TODO: Temp code, remove when done testing
+function addParking() {
+  mapView.Models.add(
+    {
+
+      target: new Coordinate(43.46374694087725, -80.52331051909808,),
+      scale: [0.05, 0.05, 0.05],
+      rotation: [0, 0, 32.5],
+    },
+    {
+      url: "./assets/models/parking.glb",
+    }
+  );
 }
 
 function fetchAllAmenities() {
@@ -292,7 +880,7 @@ function fetchAllAmenities() {
   var jsonAmenities = JSON.stringify(amenitiesList);
 
   if (mobileWebView) {
-    FlutterChannel.postMessage(jsonAmenities);
+    FlutterChannel.postMessage("amenities" + jsonAmenities);
   }
 }
 
@@ -326,7 +914,7 @@ window.selectById = async function selectById(id, zoom) {
 
   if (zoom) {
     // Zoom to space
-    await mapView.Camera.focusOn(space, { pitch: 1, duration: 500, maxZoomLevel: 20});
+    await mapView.Camera.focusOn(space, { pitch: 1, duration: 500, maxZoomLevel: 20 });
   }
 }
 
@@ -400,9 +988,12 @@ function showAllAmenities() {
   for (const poi of mapData.getByType('point-of-interest')) {
     mapView.Labels.add(poi.coordinate, poi.name, {
       appearance: {
+        text: {
+          size: 14
+        },
         marker: {
           icon: getAmenityIcon(poi.name),
-          iconSize: 34,
+          iconSize: 30,
         }
       }
     });
@@ -417,9 +1008,12 @@ window.showAmenitiesOfType = function showAmenitiesOfType(type) {
     if (poi.floor.id === mapView.currentFloor.id && poi.name == type) {
       mapView.Labels.add(poi.coordinate, poi.name, {
         appearance: {
+          text: {
+            size: 14
+          },
           marker: {
             icon: getAmenityIcon(poi.name),
-            iconSize: 34,
+            iconSize: 30,
           }
         }
       });
@@ -510,3 +1104,32 @@ function getAmenityIcon(amenityType) {
   return icon;
 
 }
+
+// TODO: Temp code, remove when done testing
+// init('65ca6d27d53f21f234ae6395', '0b25fc24d564c644443663d0b4d083605090d349975d0983fc96e06a5b1934dd', '65c0ff7430b94e3fabd5bb8c', 'm_bc60d9c6042fef0f', {
+//   's_fa005f3d5fada368': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/a4d4304becabcd00970887da3bf25597ea336dca.png',
+//   's_310f7df34a3c6853': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/292c30b0d8ba44f407ed9de0e1cfb197de016dd2.png',
+//   's_5d2f5e3a61ba4fe4': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c741334482d256690da443d1e2d7c62fb6e84100.png',
+//   's_75d2b2934fe2495f': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/dc2fa5e7ba2c2aac23d3f6adc2c92d535be144c8.png',
+//   's_b6adb793f5040daf': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/b52166bfdc4d00c78d68dc49e299dede5b62a847.png',
+//   's_c4bbb9b22a85cf30': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/63205038a4fbd968d51401e09a46682d29346c3d.png',
+//   's_c33647c792604ae1': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/2cfc5a41e6425cab93fbdf283d020c2735042d8a.png',
+//   's_58172f1247075c72': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/6cf3f49b0334f4dada1b801050b3f2024fb4bc51.png',
+//   's_21b3ffc46583729a': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/5fd8c7fc858e511473d406ab1bec0ebb8956f386.png',
+//   's_4f386ba681ebb61d': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/317817284bcf09b4fa29de2b7d102750256bf6a9.png',
+//   's_8b3aac9b4b9dc9ef': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/df5e5d436a1bbd6c238656cdfa1deb3ff0db764d.png',
+//   's_d33e419c4bb801c0': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/622303fe4496afa8fb8255eaef7ace716f321fed.png',
+//   's_ca4c11f3a7bc82da': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c3f702f896784233f0cc71d6697dede1bf4ca58f.png',
+//   's_6696afd32ac79ddb': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/983f7087bd7131954428429767dd3198233deb7c.png',
+//   's_57e2ffa7f48e2cb6': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/dfe4f5f8ec42360f078e729548dc4a17962dfd79.png',
+//   's_429e0a876a1e4490': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/992b3e6e43cd2737e4a52d5fa9f8256614d7e412.png',
+//   's_45b97f4031d3ff2f': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/b3f0fdde9ee50f7540c3208f955223e53c2ceb61.png',
+//   's_037e1a9fa2cb8331': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/654f4072326c03a4702fe528efaae0307fbb3c8d.png',
+//   's_b08905633a9d2000': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/08e041a5925b0a5bbf25481322e98092f6038087.png',
+//   's_ba1781eaf91646e9': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/389086747c500c816f978608840518541ecc5dec.png',
+//   's_144702bf49e8c794': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/91106da1d5bc3164b53ca71317e2f02282c79b25.png',
+//   's_0b35e438d8b666f6': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/35b579a6e8e49c98b098733ef1bd38f643488260.png',
+// }, false)
+
+// ! Map id default - Test only: 660c0c6e7c0c4fe5b4cc484c
+// ! Map id with POIs - Test only: 65c0ff7430b94e3fabd5bb8c
