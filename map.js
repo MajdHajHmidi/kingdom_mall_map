@@ -10,16 +10,6 @@ const navigationColor = '#fbda03';
 const objectsColors = "#e3e3de";
 const washroomsColor = "#dadee8";
 
-const washroomsIconSVG = `
-                <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M10 21.3904V26.5C10 26.7761 9.77614 27 9.5 27H6.5C6.22386 27 6 26.7761 6 26.5V21.3904C6 21.1609 5.84386 20.961 5.62129 20.9053L4.37871 20.5946C4.15614 20.5389 4 20.339 4 20.1095V14C4 13 5.25336 11 8 11C10.7466 11 12 13 12 14V20.1095C12 20.339 11.8439 20.5389 11.6213 20.5946L10.3787 20.9053C10.1561 20.961 10 21.1609 10 21.3904Z" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
-                  <circle cx="8" cy="7" r="2" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
-                  <line x1="15.5" y1="6" x2="15.5" y2="26" stroke="#1B1B1B"/>
-                  <path d="M24.5 27H21.5C21.2239 27 21 26.7761 21 26.5V22.5C21 22.2239 20.7761 22 20.5 22H18.6025C18.2894 22 18.0533 21.7156 18.111 21.4079L19.5 14C19.8333 13 21 11 23 11C25.5 11 26.1667 13 26.5 14L27.889 21.4079C27.9467 21.7156 27.7106 22 27.3975 22H25.5C25.2239 22 25 22.2239 25 22.5V26.5C25 26.7761 24.7761 27 24.5 27Z" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
-                  <circle cx="23" cy="7" r="2" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
-                </svg>
-`
-
 let mapOptions;
 let initialFloorId;
 
@@ -63,7 +53,8 @@ window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue,
     addStreets()
     addLakes()
     addBushes()
-    addParking()
+    addParkingMark()
+    addParkingLot()
 
     if (viewOnlyStoreId) {
       setupLabelsAndInteractivity()
@@ -81,9 +72,6 @@ window.init = async function init(mapKey, mapSecret, mapId, initialFloorIdValue,
     // Setup main functionalities
     setupLabelsAndInteractivity();
     handleClickChanges();
-
-    // Fetch from map and send to Flutter app
-    fetchAllAmenities()
 
     // Emit success state
     if (mobileWebView) {
@@ -131,20 +119,6 @@ function setupLabelsAndInteractivity() {
         if (checkForWashroom(space.name)) {
           mapView.updateState(space, {
             color: washroomsColor,
-          });
-          mapView.Labels.add(space, space.name, {
-            appearance: {
-              text: {
-                size: 14
-              },
-              marker: {
-                icon: washroomsIconSVG,
-                iconSize: 25,
-                foregroundColor: {
-                  active: markersForegroundColor,
-                },
-              }
-            }
           });
           return;
         }
@@ -214,7 +188,7 @@ async function handleClickChanges() {
   mapView.on('click', async (e) => {
     // TODO: Temp code, remove when done testing
     // if (e.models.length > 0) {
-    //   //If a 3D Model was clicked on, remove it.
+    //   // If a 3D Model was clicked on, remove it.
     //   mapView.Models.remove(e.models[0]);
     // } else {
     //   console.clear()
@@ -222,12 +196,12 @@ async function handleClickChanges() {
     //   mapView.Models.add(
     //     {
     //       target: e.coordinate,
-    //       scale: [0.009, 0.01, 0.05],
-    //       rotation: [0, 0, -58],
+    //       scale: [0.05, 0.05, 0.05],
+    //       rotation: [0, 0, 32.5],
     //       interactive: true,
     //     },
     //     {
-    //       url: "./assets/models/lake3.glb",
+    //       url: "./assets/models/parking.glb",
     //     }
     //   );
     // }
@@ -257,7 +231,6 @@ async function handleClickChanges() {
 
     // 4 Zoom to the clicked space
     await mapView.Camera.focusOn(clickedSpace[0], {
-      maxZoomLevel: 20,
       pitch: 1,
       duration: 500,
     });
@@ -266,28 +239,51 @@ async function handleClickChanges() {
 
 // TODO: Temp code, remove when done testing
 function setFakeStoreNames() {
-  storesFakeNames.set('s_fa005f3d5fada368', 'أديداس');
-  storesFakeNames.set('s_310f7df34a3c6853', 'نايكي');
-  storesFakeNames.set('s_5d2f5e3a61ba4fe4', 'أناقة تحاكي الزمن');
-  storesFakeNames.set('s_75d2b2934fe2495f', 'Chanel');
-  storesFakeNames.set('s_b6adb793f5040daf', 'Mango');
-  storesFakeNames.set('s_c4bbb9b22a85cf30', 'Calvin Klein');
-  storesFakeNames.set('s_c33647c792604ae1', 'Vans');
-  storesFakeNames.set('s_58172f1247075c72', 'McDonald\'s');
-  storesFakeNames.set('s_21b3ffc46583729a', 'Sunglass Hut');
-  storesFakeNames.set('s_4f386ba681ebb61d', 'Regus');
-  storesFakeNames.set('s_8b3aac9b4b9dc9ef', 'Captain Restaurant');
-  storesFakeNames.set('s_d33e419c4bb801c0', 'Albik Family Station');
-  storesFakeNames.set('s_ca4c11f3a7bc82da', 'Bahri One');
-  storesFakeNames.set('s_6696afd32ac79ddb', 'The Melting Pot');
-  storesFakeNames.set('s_57e2ffa7f48e2cb6', 'Avanti Milano');
-  storesFakeNames.set('s_429e0a876a1e4490', 'LUSH');
-  storesFakeNames.set('s_45b97f4031d3ff2f', 'Altar\'d State');
-  storesFakeNames.set('s_037e1a9fa2cb8331', 'lululemon');
-  storesFakeNames.set('s_b08905633a9d2000', 'Williams-Sonoma');
-  storesFakeNames.set('s_ba1781eaf91646e9', 'Pottery Barn');
-  storesFakeNames.set('s_144702bf49e8c794', 'Talbots');
-  storesFakeNames.set('s_0b35e438d8b666f6', 'Sushi Freak');
+  storesFakeNames.set('s_fa005f3d5fada368', 'مطعم البيك العائلي');
+  storesFakeNames.set('s_310f7df34a3c6853', 'باتيك فيليب');
+  storesFakeNames.set('s_5d2f5e3a61ba4fe4', 'زارا');
+  storesFakeNames.set('s_75d2b2934fe2495f', 'مطعم القبطان');
+  storesFakeNames.set('s_b6adb793f5040daf', 'برجر كنج');
+  storesFakeNames.set('s_c4bbb9b22a85cf30', 'سي بي تو');
+  storesFakeNames.set('s_c33647c792604ae1', 'متجر هومز مارت');
+  storesFakeNames.set('s_58172f1247075c72', 'مفروشات ديموس');
+  storesFakeNames.set('s_21b3ffc46583729a', 'نايكي');
+  storesFakeNames.set('s_4f386ba681ebb61d', 'ماكدونلز');
+  storesFakeNames.set('s_8b3aac9b4b9dc9ef', 'أديداس');
+  storesFakeNames.set('s_d33e419c4bb801c0', 'دجاج كنتاكي');
+  storesFakeNames.set('s_ca4c11f3a7bc82da', 'دومينوز بيتزا');
+  storesFakeNames.set('s_6696afd32ac79ddb', 'ساب واي');
+  storesFakeNames.set('s_57e2ffa7f48e2cb6', 'باسكن روبنز');
+  storesFakeNames.set('s_429e0a876a1e4490', 'كالفن كلاين');
+  storesFakeNames.set('s_45b97f4031d3ff2f', 'شانيل');
+  storesFakeNames.set('s_037e1a9fa2cb8331', 'بوتيري بارن');
+  storesFakeNames.set('s_b08905633a9d2000', 'مانغو');
+  storesFakeNames.set('s_ba1781eaf91646e9', 'فانز');
+  storesFakeNames.set('s_144702bf49e8c794', 'دايز');
+  storesFakeNames.set('s_0b35e438d8b666f6', 'لاكوست');
+
+  // storesFakeNames.set('s_fa005f3d5fada368', 'albik family station');
+  // storesFakeNames.set('s_310f7df34a3c6853', 'Patek Philippe');
+  // storesFakeNames.set('s_5d2f5e3a61ba4fe4', 'Zara');
+  // storesFakeNames.set('s_75d2b2934fe2495f', 'Captain Restaurant');
+  // storesFakeNames.set('s_b6adb793f5040daf', 'Burger King');
+  // storesFakeNames.set('s_c4bbb9b22a85cf30', 'CB2');
+  // storesFakeNames.set('s_c33647c792604ae1', 'HomsMart shop');
+  // storesFakeNames.set('s_58172f1247075c72', 'Demos Furniture');
+  // storesFakeNames.set('s_21b3ffc46583729a', 'Nike');
+  // storesFakeNames.set('s_4f386ba681ebb61d', 'McDonald\'s');
+  // storesFakeNames.set('s_8b3aac9b4b9dc9ef', 'Adids');
+  // storesFakeNames.set('s_d33e419c4bb801c0', 'Kentucky Chicken');
+  // storesFakeNames.set('s_ca4c11f3a7bc82da', 'Domino\'s Pizza');
+  // storesFakeNames.set('s_6696afd32ac79ddb', 'Subway');
+  // storesFakeNames.set('s_57e2ffa7f48e2cb6', 'Baskin Robbins');
+  // storesFakeNames.set('s_429e0a876a1e4490', 'Calvin Clein');
+  // storesFakeNames.set('s_45b97f4031d3ff2f', 'Chanel');
+  // storesFakeNames.set('s_037e1a9fa2cb8331', 'Pottery Barn');
+  // storesFakeNames.set('s_b08905633a9d2000', 'Mango');
+  // storesFakeNames.set('s_ba1781eaf91646e9', 'Vans');
+  // storesFakeNames.set('s_144702bf49e8c794', 'Daze');
+  // storesFakeNames.set('s_0b35e438d8b666f6', 'LACOSTE');
 }
 
 // TODO: Temp code, remove when done testing
@@ -629,11 +625,11 @@ function addGrass() {
   grassList.push({ latitude: 43.4632620784687, longitude: -80.52264733190879, type: 'exHuge' })
 
   // Extra Huge Diagonal
-  grassList.push({ latitude: 43.46396367027718, longitude: -80.52334613325488, type: 'exDgHuge' })
-  grassList.push({ latitude: 43.46393881538468, longitude: -80.52319100607046, type: 'exDgHuge' })
-  grassList.push({ latitude: 43.46391795838668, longitude: -80.52306350746873, type: 'exDgHuge' })
-  grassList.push({ latitude: 43.46391107355239, longitude: -80.5230199849701, type: 'exDgHuge' })
-  grassList.push({ latitude: 43.464026005561486, longitude: -80.52316547764643, type: 'exDgHuge' })
+  // grassList.push({ latitude: 43.46396367027718, longitude: -80.52334613325488, type: 'exDgHuge' })
+  // grassList.push({ latitude: 43.46393881538468, longitude: -80.52319100607046, type: 'exDgHuge' })
+  // grassList.push({ latitude: 43.46391795838668, longitude: -80.52306350746873, type: 'exDgHuge' })
+  // grassList.push({ latitude: 43.46391107355239, longitude: -80.5230199849701, type: 'exDgHuge' })
+  // grassList.push({ latitude: 43.464026005561486, longitude: -80.52316547764643, type: 'exDgHuge' })
 
   grassList.forEach((coordinate) => {
     if (coordinate.type == 'vertical') {
@@ -738,10 +734,10 @@ function addStreets() {
   streetList.push({ latitude: 43.46362243080769, longitude: -80.52381609091306, type: 'horizontal' })
 
   // Huge scale
-  streetList.push({ latitude: 43.46375308912703, longitude: -80.5234512477109, type: 'huge' })
-  streetList.push({ latitude: 43.46386200807034, longitude: -80.52321663020821, type: 'huge' })
-  streetList.push({ latitude: 43.46368666863356, longitude: -80.52339408505112, type: 'huge' })
-  streetList.push({ latitude: 43.46379565951727, longitude: -80.5231584813563, type: 'huge' })
+  // streetList.push({ latitude: 43.46375308912703, longitude: -80.5234512477109, type: 'huge' })
+  // streetList.push({ latitude: 43.46386200807034, longitude: -80.52321663020821, type: 'huge' })
+  // streetList.push({ latitude: 43.46368666863356, longitude: -80.52339408505112, type: 'huge' })
+  // streetList.push({ latitude: 43.46379565951727, longitude: -80.5231584813563, type: 'huge' })
 
   streetList.forEach((coordinate) => {
     if (coordinate.type == 'vertical') {
@@ -782,41 +778,69 @@ function addStreets() {
 }
 
 // TODO: Temp code, remove when done testing
+function addParkingLot() {
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.463767858514544, -80.5232988453617,),
+      scale: [0.12, 0.09, 0.005],
+      rotation: [0, 0, 32.5],
+    },
+    {
+      url: "./assets/models/parking_street.glb",
+    }
+  );
+}
+
+// TODO: Temp code, remove when done testing
+function addParkingMark() {
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.463767858514544, -80.5232988453617,),
+      scale: [0.05, 0.05, 0.05],
+      rotation: [0, 0, 32.5],
+    },
+    {
+      url: "./assets/models/parking.glb",
+    }
+  );
+}
+
+// TODO: Temp code, remove when done testing
 function addLakes() {
-   mapView.Models.add(
-     {
-       target: new Coordinate(43.46295821582915, -80.52389587201739),
-          scale: [0.03, 0.03, 0.1],
-          rotation: [0, 0, 32.5],
-     },
-     {
-       url: "./assets/models/lake1.glb",
-     }
-   );
+  mapView.Models.add(
+    {
+      target: new Coordinate(43.46295821582915, -80.52389587201739),
+      scale: [0.03, 0.03, 0.1],
+      rotation: [0, 0, 32.5],
+    },
+    {
+      url: "./assets/models/lake1.glb",
+    }
+  );
 
   mapView.Models.add(
     {
       target: new Coordinate(43.46328382816158, -80.52279368983257,),
-        scale: [0.015, 0.015, 0.1],
-        rotation: [0, 0, 32.5],
+      scale: [0.015, 0.015, 0.1],
+      rotation: [0, 0, 32.5],
     },
     {
       url: "./assets/models/lake2.glb",
     }
   );
 
-  mapView.Models.add(
-    {
-      target: new Coordinate(43.463886038638705, -80.52319971497941,),
-          scale: [0.009, 0.01, 0.007],
-          rotation: [0, 0, -58],
-    },
-    {
-      url: "./assets/models/lake3.glb",
-    }
-  );
+  // mapView.Models.add(
+  //   {
+  //     target: new Coordinate(43.463886038638705, -80.52319971497941,),
+  //         scale: [0.009, 0.01, 0.007],
+  //         rotation: [0, 0, -58],
+  //   },
+  //   {
+  //     url: "./assets/models/lake3.glb",
+  //   }
+  // );
 
-  
+
 }
 
 // TODO: Temp code, remove when done testing
@@ -836,6 +860,9 @@ function addBushes() {
   bushList.push({ latitude: 43.463582392643325, longitude: -80.52420949679151, })
   bushList.push({ latitude: 43.463079233527274, longitude: -80.52324081592958, })
   bushList.push({ latitude: 43.46394400123322, longitude: -80.52349416813595, })
+  bushList.push({ latitude: 43.46401281649374, longitude: -80.52301563655364, })
+  bushList.push({ latitude: 43.464060244594535, longitude: -80.52322824273048, })
+
 
   bushList.forEach((coordinate) => {
     mapView.Models.add(
@@ -851,21 +878,8 @@ function addBushes() {
   })
 }
 
-// TODO: Temp code, remove when done testing
-function addParking() {
-  mapView.Models.add(
-    {
-
-      target: new Coordinate(43.46374694087725, -80.52331051909808,),
-      scale: [0.05, 0.05, 0.05],
-      rotation: [0, 0, 32.5],
-    },
-    {
-      url: "./assets/models/parking.glb",
-    }
-  );
-}
-
+// ! DEPRECATED
+/** 
 function fetchAllAmenities() {
   var amenitiesList = []
 
@@ -883,6 +897,7 @@ function fetchAllAmenities() {
     FlutterChannel.postMessage("amenities" + jsonAmenities);
   }
 }
+*/
 
 // Called whenever a user deselects a store from UI
 window.resetCameraPosition = function resetCameraPosition() {
@@ -914,7 +929,7 @@ window.selectById = async function selectById(id, zoom) {
 
   if (zoom) {
     // Zoom to space
-    await mapView.Camera.focusOn(space, { pitch: 1, duration: 500, maxZoomLevel: 20 });
+    await mapView.Camera.focusOn(space, { pitch: 1, duration: 500, });
   }
 }
 
@@ -964,7 +979,7 @@ window.showDirections = async function showDirections(firstId, secondId, accessi
         color: navigationColor,
       },
     });
-    await mapView.Camera.focusOn(first, { pitch: 1, duration: 500, maxZoomLevel: 20 });
+    await mapView.Camera.focusOn(first, { pitch: 1, duration: 500, });
   }
 
 }
@@ -1032,9 +1047,11 @@ window.focusOnAmenity = async function focusOnAmenity(id) {
   await mapView.Camera.focusOn(poi, { pitch: 1, duration: 500, });
 }
 
-// On - Remove all labels (Used internally when showing specific type of amenities)
-// Off - Remove all labels then turn store labels back on (used internally and 
+// True - Remove all store labels (Used internally when showing specific type of amenities)
+// False - Remove all labels then turn store labels back on (used internally and 
 // externally when clicked on a store or when user navigates out of amenities section)
+// * Summary: Use this function when amenities genre or an amenity is deselected to toggle store
+// * labels back on
 window.toggleAmenities = function toggleAmenities(show) {
   if (show) {
     mapView.Labels.removeAll()
@@ -1044,11 +1061,11 @@ window.toggleAmenities = function toggleAmenities(show) {
   }
 }
 
-// Deprecated - Using store logos now instead
+// DEPRECATED - Using store logos now instead
 /*
 function getIconFromCategory(category) {
   let svgIcon = '';
-
+ 
   switch (category) {
     case 'clothes':
       svgIcon = `
@@ -1066,7 +1083,7 @@ function getIconFromCategory(category) {
     default:
       svgIcon = '';
   }
-
+ 
   return svgIcon;
 }
 */
@@ -1083,7 +1100,18 @@ function getAmenityIcon(amenityType) {
   let icon = '';
 
   switch (amenityType) {
-    case 'Parking':
+    case 'Washroom':
+      icon = `
+              <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M10 21.3904V26.5C10 26.7761 9.77614 27 9.5 27H6.5C6.22386 27 6 26.7761 6 26.5V21.3904C6 21.1609 5.84386 20.961 5.62129 20.9053L4.37871 20.5946C4.15614 20.5389 4 20.339 4 20.1095V14C4 13 5.25336 11 8 11C10.7466 11 12 13 12 14V20.1095C12 20.339 11.8439 20.5389 11.6213 20.5946L10.3787 20.9053C10.1561 20.961 10 21.1609 10 21.3904Z" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
+                <circle cx="8" cy="7" r="2" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
+                <line x1="15.5" y1="6" x2="15.5" y2="26" stroke="#1B1B1B"/>
+                <path d="M24.5 27H21.5C21.2239 27 21 26.7761 21 26.5V22.5C21 22.2239 20.7761 22 20.5 22H18.6025C18.2894 22 18.0533 21.7156 18.111 21.4079L19.5 14C19.8333 13 21 11 23 11C25.5 11 26.1667 13 26.5 14L27.889 21.4079C27.9467 21.7156 27.7106 22 27.3975 22H25.5C25.2239 22 25 22.2239 25 22.5V26.5C25 26.7761 24.7761 27 24.5 27Z" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
+                <circle cx="23" cy="7" r="2" fill="#1B1B1B" stroke="#1B1B1B" stroke-width="1.5"/>
+              </svg>`;
+      break;
+
+    default:
       icon = `
           <svg fill="none" height="155" viewBox="0 0 182 155" width="182" xmlns="http://www.w3.org/2000/svg">
             <rect width="100%" height="100%" fill="white"/>
@@ -1095,10 +1123,6 @@ function getAmenityIcon(amenityType) {
             </defs>
           </svg>
           `;
-      break;
-
-    default:
-      icon = '';
   }
 
   return icon;
