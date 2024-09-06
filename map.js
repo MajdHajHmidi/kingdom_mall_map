@@ -201,7 +201,7 @@ async function handleClickChanges() {
     //       interactive: true,
     //     },
     //     {
-    //       url: "./assets/models/parking.glb",
+    //       url: "./public/assets/models/parking.glb",
     //     }
     //   );
     // }
@@ -640,7 +640,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'horizontal') {
@@ -651,7 +651,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'exVertical') {
@@ -662,7 +662,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'exHorizontal') {
@@ -673,7 +673,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     }
@@ -685,7 +685,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     }
@@ -697,7 +697,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'exDgHuge') {
@@ -708,7 +708,7 @@ function addGrass() {
           rotation: [0, 0, -12.5],
         },
         {
-          url: "./assets/models/grass.glb",
+          url: "./public/assets/models/grass.glb",
         }
       );
     }
@@ -748,7 +748,7 @@ function addStreets() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/street.glb",
+          url: "./public/assets/models/street.glb",
         }
       );
     } else if (coordinate.type == 'horizontal') {
@@ -759,7 +759,7 @@ function addStreets() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/street.glb",
+          url: "./public/assets/models/street.glb",
         }
       );
     } else {
@@ -770,7 +770,7 @@ function addStreets() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./assets/models/street.glb",
+          url: "./public/assets/models/street.glb",
         }
       );
     }
@@ -786,7 +786,7 @@ function addParkingLot() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./assets/models/parking_street.glb",
+      url: "./public/assets/models/parking_street.glb",
     }
   );
 }
@@ -800,7 +800,7 @@ function addParkingMark() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./assets/models/parking.glb",
+      url: "./public/assets/models/parking.glb",
     }
   );
 }
@@ -814,7 +814,7 @@ function addLakes() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./assets/models/lake1.glb",
+      url: "./public/assets/models/lake1.glb",
     }
   );
 
@@ -825,7 +825,7 @@ function addLakes() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./assets/models/lake2.glb",
+      url: "./public/assets/models/lake2.glb",
     }
   );
 
@@ -836,7 +836,7 @@ function addLakes() {
   //         rotation: [0, 0, -58],
   //   },
   //   {
-  //     url: "./assets/models/lake3.glb",
+  //     url: "./public/assets/models/lake3.glb",
   //   }
   // );
 
@@ -872,7 +872,7 @@ function addBushes() {
         rotation: [90, 0, 0],
       },
       {
-        url: "./assets/models/bush.glb",
+        url: "./public/assets/models/bush.glb",
       }
     );
   })
