@@ -201,7 +201,7 @@ async function handleClickChanges() {
     //       interactive: true,
     //     },
     //     {
-    //       url: "./public/assets/models/parking.glb",
+    //       url: "./assets/models/parking.glb",
     //     }
     //   );
     // }
@@ -640,7 +640,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'horizontal') {
@@ -651,7 +651,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'exVertical') {
@@ -662,7 +662,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'exHorizontal') {
@@ -673,7 +673,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     }
@@ -685,7 +685,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     }
@@ -697,7 +697,7 @@ function addGrass() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     } else if (coordinate.type == 'exDgHuge') {
@@ -708,7 +708,7 @@ function addGrass() {
           rotation: [0, 0, -12.5],
         },
         {
-          url: "./public/assets/models/grass.glb",
+          url: "./assets/models/grass.glb",
         }
       );
     }
@@ -748,7 +748,7 @@ function addStreets() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/street.glb",
+          url: "./assets/models/street.glb",
         }
       );
     } else if (coordinate.type == 'horizontal') {
@@ -759,7 +759,7 @@ function addStreets() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/street.glb",
+          url: "./assets/models/street.glb",
         }
       );
     } else {
@@ -770,7 +770,7 @@ function addStreets() {
           rotation: [0, 0, 32.5],
         },
         {
-          url: "./public/assets/models/street.glb",
+          url: "./assets/models/street.glb",
         }
       );
     }
@@ -786,7 +786,7 @@ function addParkingLot() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./public/assets/models/parking_street.glb",
+      url: "./assets/models/parking_street.glb",
     }
   );
 }
@@ -800,7 +800,7 @@ function addParkingMark() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./public/assets/models/parking.glb",
+      url: "./assets/models/parking.glb",
     }
   );
 }
@@ -814,7 +814,7 @@ function addLakes() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./public/assets/models/lake1.glb",
+      url: "./assets/models/lake1.glb",
     }
   );
 
@@ -825,7 +825,7 @@ function addLakes() {
       rotation: [0, 0, 32.5],
     },
     {
-      url: "./public/assets/models/lake2.glb",
+      url: "./assets/models/lake2.glb",
     }
   );
 
@@ -836,7 +836,7 @@ function addLakes() {
   //         rotation: [0, 0, -58],
   //   },
   //   {
-  //     url: "./public/assets/models/lake3.glb",
+  //     url: "./assets/models/lake3.glb",
   //   }
   // );
 
@@ -872,7 +872,7 @@ function addBushes() {
         rotation: [90, 0, 0],
       },
       {
-        url: "./public/assets/models/bush.glb",
+        url: "./assets/models/bush.glb",
       }
     );
   })
@@ -1130,7 +1130,7 @@ function getAmenityIcon(amenityType) {
 }
 
 // TODO: Temp code, remove when done testing
-// init('65ca6d27d53f21f234ae6395', '0b25fc24d564c644443663d0b4d083605090d349975d0983fc96e06a5b1934dd', '65c0ff7430b94e3fabd5bb8c', 'm_bc60d9c6042fef0f', {
+// init('65ca6d27d53f21f234ae6395', '0b25fc24d564c644443663d0b4d083605090d349975d0983fc96e06a5b1934dd', '65c0ff7430b94e3fabd5bb8c', 'm_1fc5f0f7fae65ba6', {
 //   's_fa005f3d5fada368': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/a4d4304becabcd00970887da3bf25597ea336dca.png',
 //   's_310f7df34a3c6853': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/292c30b0d8ba44f407ed9de0e1cfb197de016dd2.png',
 //   's_5d2f5e3a61ba4fe4': 'https://cdn.mappedin.com/573386640ff1998d0d109790/resized/c741334482d256690da443d1e2d7c62fb6e84100.png',
