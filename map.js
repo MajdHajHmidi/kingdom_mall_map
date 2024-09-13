@@ -972,6 +972,10 @@ window.showDirections = async function showDirections(firstId, secondId, accessi
     return;
   }
 
+  if (mobileWebView) {
+    	FlutterChannel.postMessage("directionsLock");
+  	}
+
   const directions = await mapView.getDirections(first, second, { accessible: accessible });
 
   // Show every lable when navigating
