@@ -972,7 +972,7 @@ window.showDirections = async function showDirections(firstId, secondId, accessi
     return;
   }
 
-  const directions = async mapView.getDirections(first, second, { accessible: accessible });
+  const directions = await mapView.getDirections(first, second, { accessible: accessible });
 
   // Show every lable when navigating
   setupLabelsAndInteractivity()
