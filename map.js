@@ -966,10 +966,13 @@ window.showDirections = async function showDirections(firstId, secondId, accessi
 
   // Ensure that the spaces/POIs exist.
   if (!first || !second) {
+  	if (mobileWebView) {
+    	FlutterChannel.postMessage("directionsLockReleased");
+  	}
     return;
   }
 
-  const directions = mapView.getDirections(first, second, { accessible: accessible });
+  const directions = async mapView.getDirections(first, second, { accessible: accessible });
 
   // Show every lable when navigating
   setupLabelsAndInteractivity()
@@ -986,6 +989,9 @@ window.showDirections = async function showDirections(firstId, secondId, accessi
     });
     // await mapView.Camera.focusOn(first, { pitch: 1, duration: 500, });
   }
+  if (mobileWebView) {
+    	FlutterChannel.postMessage("directionsLockReleased");
+  	}
 
 }
 
